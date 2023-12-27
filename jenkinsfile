@@ -7,42 +7,37 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('my_dockerhub')
+        IMAGE_NAME = 'faniry123/mon_htl_test'
+        IMAGE_TAG = 'latest'
     }
 
     stages {
         stage('Build') {
             steps {
-                echo 'Building the HTML code'
-                // Add any additional build steps here if needed
-            }
-        }
-
-        stage('Build docker image') {
-            steps {
+                echo 'Building the Docker image...'
                 script {
-                    sh 'docker build -t mon_app_html .'
+                    sh 'docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .'
                 }
             }
         }
 
-        stage('Login') {
+        stage('Login to Docker Hub') {
             steps {
                 script {
-                    // Use double quotes to interpolate variables
                     sh "echo \${DOCKERHUB_CREDENTIALS_PSW} | docker login -u \${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
                 }
             }
         }
 
-        stage('Push image to hub') {
+        stage('Push image to Docker Hub') {
             steps {
                 script {
-                    sh 'docker push mon_app_html'
+                    sh "docker push ${IMAGE_NAME}:${IMAGE_TAG}"
                 }
             }
         }
 
-        stage('Logout') {
+        stage('Logout from Docker Hub') {
             steps {
                 script {
                     sh 'docker logout'
