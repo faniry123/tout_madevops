@@ -28,8 +28,8 @@ pipeline {
             steps {
                 script {
                     // Login to Docker Hub
-                    withCredentials([string(credentialsId: registryCredential, variable: 'DOCKERHUB_CREDENTIALS')]) {
-                        sh "echo \$DOCKERHUB_CREDENTIALS | docker login -u faniry123 --password-stdin"
+                    withCredentials([usernamePassword(credentialsId: registryCredential, usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                        sh "echo \$DOCKERHUB_PASSWORD | docker login -u \$DOCKERHUB_USERNAME --password-stdin"
                     }
 
                     // Push the Docker image
@@ -46,7 +46,7 @@ pipeline {
                 script {
                     // Logout from Docker Hub
                     sh 'docker logout'
-                    
+
                     // Remove the local Docker image
                     sh "docker rmi ${registry}:${BUILD_NUMBER}"
                 }
