@@ -1,47 +1,40 @@
 pipeline {
+    environment {
+        registry = "faniry123/ma_repohub"
+        registryCredential = 'dockerhub_id'
+        dockerImage = ''
+    }
+
     agent any
 
-    options {
-        buildDiscarder(logRotator(numToKeepStr: '5'))
-    }
-
-    environment {
-        DOCKERHUB_CREDENTIALS = credentials('my_dockerhub')
-        IMAGE_NAME = 'faniry123/mon_htl_test'
-        IMAGE_TAG = 'latest'
-    }
-
     stages {
-        stage('Build') {
+        stage('Cloning our Git') {
             steps {
-                echo 'Building the Docker image...'
+                git 'https://github.com/faniry123/mon_html.git'
+            }
+        }
+
+        stage('Building our image') {
+            steps {
                 script {
-                    sh 'docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .'
+                    dockerImage = docker.build("${registry}:${BUILD_NUMBER}")
                 }
             }
         }
 
-        stage('Login to Docker Hub') {
+        stage('Deploy our image') {
             steps {
                 script {
-                    sh "echo \${DOCKERHUB_CREDENTIALS_PSW} | docker login -u \${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
+                    docker.withRegistry('', registryCredential) {
+                        dockerImage.push()
+                    }
                 }
             }
         }
 
-        stage('Push image to Docker Hub') {
+        stage('Cleaning up') {
             steps {
-                script {
-                    sh "docker push ${IMAGE_NAME}:${IMAGE_TAG}"
-                }
-            }
-        }
-
-        stage('Logout from Docker Hub') {
-            steps {
-                script {
-                    sh 'docker logout'
-                }
+                sh "docker rmi ${registry}:${BUILD_NUMBER}"
             }
         }
     }
