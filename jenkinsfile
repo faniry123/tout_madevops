@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '5'))
+    }
+
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('hub')
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                sh 'echo "Building the HTML code"'
+            }
+        }
+
+        stage('Build docker image') {
+            steps {
+                script {
+                    sh 'docker build -t mon_html .'
+                }
+            }
+        }
+
+        stage('Login') {
+            steps {
+                script {
+                    sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                }
+            }
+        }
+
+        stage('Push image to hub') {
+            steps {
+                script {
+                    sh 'docker push mon_html'
+                }
+            }
+        }
+
+        stage('Logout') {
+            steps {
+                script {
+                    sh 'docker logout'
+                }
+            }
+        }
+    }
+}
