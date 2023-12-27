@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('hub')
+        DOCKERHUB_CREDENTIALS = credentials('my_dockerhub')
     }
 
     stages {
@@ -19,7 +19,7 @@ pipeline {
         stage('Build docker image') {
             steps {
                 script {
-                    sh 'docker build -t mon_html .'
+                    sh 'docker build -t mon_app_html .'
                 }
             }
         }
@@ -35,7 +35,7 @@ pipeline {
         stage('Push image to hub') {
             steps {
                 script {
-                    sh 'docker push mon_html'
+                    sh 'docker push mon_app_html'
                 }
             }
         }
