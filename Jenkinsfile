@@ -29,7 +29,7 @@ pipeline {
                 script {
                     // Login to Docker Hub
                     withCredentials([string(credentialsId: registryCredential, variable: 'DOCKERHUB_CREDENTIALS')]) {
-                        sh "echo $DOCKERHUB_CREDENTIALS | docker login -u faniry123 --password-stdin"
+                        sh "echo \$DOCKERHUB_CREDENTIALS | docker login -u faniry123 --password-stdin"
                     }
 
                     // Push the Docker image
