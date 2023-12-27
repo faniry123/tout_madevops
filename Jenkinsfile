@@ -27,6 +27,12 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
+                    // Login to Docker Hub
+                    withCredentials([string(credentialsId: registryCredential, variable: 'DOCKERHUB_CREDENTIALS')]) {
+                        sh "echo $DOCKERHUB_CREDENTIALS | docker login -u your_dockerhub_account --password-stdin"
+                    }
+
+                    // Push the Docker image
                     docker.withRegistry('', registryCredential) {
                         dockerImage.push()
                     }
@@ -38,6 +44,10 @@ pipeline {
             steps {
                 echo 'Cleaning up...'
                 script {
+                    // Logout from Docker Hub
+                    sh 'docker logout'
+                    
+                    // Remove the local Docker image
                     sh "docker rmi ${registry}:${BUILD_NUMBER}"
                 }
             }
