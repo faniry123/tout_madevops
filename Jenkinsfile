@@ -3,6 +3,8 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub_id')
+        DOCKER_IMAGE_NAME = 'faniry123/mon_test'
+        DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
     }
 
     stages {
@@ -21,7 +23,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh "docker build -t faniry123/mon_test:${BUILD_NUMBER} ."
+                sh "docker build -t ${DOCKER_IMAGE_TAG} ."
             }
         }
 
@@ -37,7 +39,7 @@ pipeline {
 
         stage('Push to Docker Hub') {
             steps {
-                sh "docker push faniry123/mon_test:${BUILD_NUMBER}"
+                sh "docker push ${DOCKER_IMAGE_TAG}"
             }
         }
 
