@@ -2,12 +2,16 @@ pipeline {
     agent any
 
     environment {
-        registry = "faniry123/ma_repohub"
-        registryCredential = 'dockerhub_id'
-        dockerImage = ''
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub_id')
     }
 
     stages {
+        stage('SCM Checkout') {
+            steps {
+                git 'https://github.com/faniry123/mon_html.git'
+            }
+        }
+
         stage('Test') {
             steps {
                 echo 'Running tests...'
@@ -17,26 +21,19 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo 'Building the Docker image...'
-                script {
-                    dockerImage = docker.build("${registry}:${BUILD_NUMBER}")
-                }
+                sh 'docker build -t faniry123/mon_html:$BUILD_NUMBER .'
+            }
+        }
+
+        stage('Login to Docker Hub') {
+            steps {
+                sh "echo \${DOCKERHUB_CREDENTIALS_PSW} | docker login -u \${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
             }
         }
 
         stage('Push to Docker Hub') {
             steps {
-                script {
-                    // Login to Docker Hub
-                    withCredentials([usernamePassword(credentialsId: registryCredential, usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
-                        sh "echo \$DOCKERHUB_PASSWORD | docker login -u \$DOCKERHUB_USERNAME --password-stdin"
-                    }
-
-                    // Push the Docker image
-                    docker.withRegistry('', registryCredential) {
-                        dockerImage.push()
-                    }
-                }
+                sh "docker push faniry123/mon_html:$BUILD_NUMBER"
             }
         }
 
@@ -48,7 +45,7 @@ pipeline {
                     sh 'docker logout'
 
                     // Remove the local Docker image
-                    sh "docker rmi ${registry}:${BUILD_NUMBER}"
+                    sh "docker rmi faniry123/mon_html:$BUILD_NUMBER"
                 }
             }
         }
