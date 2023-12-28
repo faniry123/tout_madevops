@@ -11,13 +11,15 @@ pipeline {
         stage('Test HTML') {
             steps {
                 echo 'Running HTML tests...'
-                // Add your HTML testing commands here
+                // Ajoutez vos commandes de test HTML ici
             }
         }
 
         stage('Build') {
             steps {
-                sh "docker build -t ${DOCKER_IMAGE_TAG} ."
+                script {
+                    sh "docker build -t ${DOCKER_IMAGE_TAG} ."
+                }
             }
         }
 
