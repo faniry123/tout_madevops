@@ -7,12 +7,7 @@ pipeline {
         DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
     }
 
-    stages {
-        stage('gitclone') {
-            steps {
-                git 'https://github.com/faniry123/mon_html.git'
-            }
-        }
+    
 
         stage('Test HTML') {
             steps {
