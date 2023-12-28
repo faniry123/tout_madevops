@@ -31,11 +31,11 @@ pipeline {
         stage('Login to Docker Hub') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub_id', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub_id', usernameVariable: 'DOCKERHUB_CREDENTIALS', passwordVariable: 'DOCKERHUB_CREDENTIALS')]) {
                         docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_id') {
                             // Login to Docker Hub
-                            def loginCommand = "docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
-                            sh "echo ${DOCKERHUB_CREDENTIALS_PSW} | ${loginCommand}"
+                            def loginCommand = "docker login -u ${DOCKERHUB_CREDENTIALS} --password-stdin"
+                            sh "echo ${DOCKERHUB_CREDENTIALS} | ${loginCommand}"
                         }
                     }
                 }
