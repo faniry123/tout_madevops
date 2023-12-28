@@ -7,12 +7,11 @@ pipeline {
         DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
     }
 
-    
-
+    stages {
         stage('Test HTML') {
             steps {
                 echo 'Running HTML tests...'
-                // Ajoutez vos commandes de test HTML ici
+                // Add your HTML testing commands here
             }
         }
 
@@ -26,7 +25,9 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'dockerhub_id', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
-                        sh "echo \${DOCKERHUB_PASSWORD} | docker login -u \${DOCKERHUB_USERNAME} --password-stdin"
+                        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_id') {
+                            sh "echo \${DOCKERHUB_PASSWORD} | docker login -u \${DOCKERHUB_USERNAME} --password-stdin"
+                        }
                     }
                 }
             }
@@ -34,15 +35,18 @@ pipeline {
 
         stage('Push to Docker Hub') {
             steps {
-                sh "docker push ${DOCKER_IMAGE_TAG}"
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_id') {
+                        sh "docker push ${DOCKER_IMAGE_TAG}"
+                    }
+                }
             }
         }
     }
 
-        post {
-            always {
-                sh 'docker logout'
-            }
+    post {
+        always {
+            sh 'docker logout'
         }
     }
 }
