@@ -23,6 +23,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
+                    // Build the Docker image
                     docker.build("${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}")
                 }
             }
@@ -31,11 +32,11 @@ pipeline {
         stage('Login to Docker Hub') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub_id', usernameVariable: 'DOCKERHUB_CREDENTIALS', passwordVariable: 'DOCKERHUB_CREDENTIALS')]) {
+                    // Login to Docker Hub
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub_id', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
                         docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_id') {
-                            // Login to Docker Hub
-                            def loginCommand = "docker login -u ${DOCKERHUB_CREDENTIALS} --password-stdin"
-                            sh "echo ${DOCKERHUB_CREDENTIALS} | ${loginCommand}"
+                            def loginCommand = "docker login -u ${DOCKERHUB_USERNAME} --password-stdin"
+                            sh "echo \${DOCKERHUB_PASSWORD} | ${loginCommand}"
                         }
                     }
                 }
@@ -45,8 +46,8 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
+                    // Push the Docker image to Docker Hub
                     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_id') {
-                        // Push the Docker image to Docker Hub
                         docker.image("${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}").push()
                     }
                 }
@@ -55,7 +56,6 @@ pipeline {
 
         stage('Clean up') {
             steps {
-                echo 'Cleaning up...'
                 script {
                     // Logout from Docker Hub
                     docker.withRegistry('', 'dockerhub_id') {
