@@ -42,6 +42,7 @@ pipeline {
                 sh "docker push ${DOCKER_IMAGE_TAG}"
             }
         }
+    }
 
         post {
             always {
