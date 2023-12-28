@@ -28,7 +28,8 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'dockerhub_id', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
                         docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_id') {
-                            sh "echo \${DOCKERHUB_PASSWORD} | docker login -u \${DOCKERHUB_USERNAME} --password-stdin"
+                            def loginCommand = "docker login -u ${DOCKERHUB_USERNAME} --password-stdin"
+                            sh "echo -n \${DOCKERHUB_PASSWORD} | ${loginCommand}"
                         }
                     }
                 }
@@ -38,7 +39,7 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    docker.withRegistry('https://hub.docker.com/repositories/faniry123', 'dockerhub_id') {
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_id') {
                         sh "docker push ${DOCKER_IMAGE_TAG}"
                     }
                 }
