@@ -23,7 +23,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build IMAGE_NAME
+                    docker.build IMAGE_NAME:$BUILD_NUMBER
                 }
             }
         }
@@ -44,12 +44,13 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_id') {
-                        // Push the Docker image to Docker Hub
-                        docker.image(IMAGE_NAME).push("${env.BUILD_NUMBER}")
-                    }
+                    // Push the Docker image to Docker Hub
+                    docker.image(IMAGE_NAME).push("${env.BUILD_NUMBER}")
+                    }        
                 }
             }
-        }
+
+
 
         stage('Clean up') {
             steps {
