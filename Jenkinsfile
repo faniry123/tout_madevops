@@ -3,37 +3,51 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub_id')
+        IMAGE_NAME = 'mon_html'
     }
 
     stages {
         stage('SCM Checkout') {
             steps {
-                git 'https://github.com/faniry123/mon_html.git'
+                checkout scm
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running tests...'
-                // Add your test commands here
+                echo 'Running HTML tests...'
+                // Add your HTML testing commands here
             }
         }
 
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
-                sh 'docker build -t faniry123/mon_html:$BUILD_NUMBER .'
+                script {
+                    docker.build IMAGE_NAME
+                }
             }
         }
 
         stage('Login to Docker Hub') {
             steps {
-                sh "echo \${DOCKERHUB_CREDENTIALS_PSW} | docker login -u \${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub_id', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_id') {
+                            // Login to Docker Hub
+                        }
+                    }
+                }
             }
         }
 
         stage('Push to Docker Hub') {
             steps {
-                sh "docker push faniry123/mon_html:$BUILD_NUMBER"
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_id') {
+                        // Push the Docker image to Docker Hub
+                        docker.image(IMAGE_NAME).push("${env.BUILD_NUMBER}")
+                    }
+                }
             }
         }
 
@@ -42,10 +56,12 @@ pipeline {
                 echo 'Cleaning up...'
                 script {
                     // Logout from Docker Hub
-                    sh 'docker logout'
+                    docker.withRegistry('', 'dockerhub_id') {
+                        // Logout
+                    }
 
                     // Remove the local Docker image
-                    sh "docker rmi faniry123/mon_html:$BUILD_NUMBER"
+                    docker.image(IMAGE_NAME).remove("${env.BUILD_NUMBER}")
                 }
             }
         }
