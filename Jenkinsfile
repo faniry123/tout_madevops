@@ -28,7 +28,7 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'dockerhub_id', usernameVariable: 'DOCKERHUB_LOGIN', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
                         docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_id') {
-                            def loginCommand = "docker login -u ${DOCKERHU_LOGIN} --password-stdin"
+                            def loginCommand = "docker login -u ${DOCKERHU_LOGIN} -p ${DOCKERHU_PASSWORD}  --password-stdin"
                             sh "echo -n \${DOCKERHUB_PASSWORD} | ${loginCommand}"
                         }
                     }
