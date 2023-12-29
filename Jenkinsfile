@@ -18,7 +18,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    sh "docker build -t ${DOCKER_IMAGE_TAG} ."
+                    docker.build("${DOCKER_IMAGE_TAG}", '.')
                 }
             }
         }
@@ -28,7 +28,7 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'dockerhub_id', usernameVariable: 'DOCKERHUB_LOGIN', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
                         docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_id') {
-                            def loginCommand = "docker login -u ${DOCKERHUB_LOGIN} -p ${DOCKERHUB_PASSWORD}  --password-stdin"
+                            def loginCommand = "docker login -u ${DOCKERHUB_LOGIN} -p ${DOCKERHUB_PASSWORD} --password-stdin"
                             sh "echo -n \${DOCKERHUB_PASSWORD} | ${loginCommand}"
                         }
                     }
@@ -40,7 +40,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_id') {
-                        sh "docker push ${DOCKER_IMAGE_TAG}"
+                        docker.push("${DOCKER_IMAGE_TAG}")
                     }
                 }
             }
