@@ -29,7 +29,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'dockerhub_id', usernameVariable: 'faniry123', passwordVariable: 'XBL+s-R9sTefw&t')]) {
                         docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_id') {
                             def loginCommand = "docker login -u ${faniry123} --password-stdin"
-                            sh "echo -n \${DOCKERHUB_PASSWORD} | ${loginCommand}"
+                            sh "echo -n \${XBL+s-R9sTefw&t} | ${loginCommand}"
                         }
                     }
                 }
