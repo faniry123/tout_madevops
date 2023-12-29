@@ -46,8 +46,13 @@ pipeline {
         stage('Remove Old Docker Image') {
             steps {
                 script {
-                    // Remove the old Docker image
-                    docker.image("${OLD_DOCKER_IMAGE_TAG}").remove()
+                    // Remove the old Docker image if it exists
+                    def oldImage = docker.image("${OLD_DOCKER_IMAGE_TAG}")
+                    if (oldImage) {
+                        oldImage.remove()
+                    } else {
+                        echo "Old Docker image not found. Skipping removal."
+                    }
                 }
             }
         }
