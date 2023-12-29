@@ -5,6 +5,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub_id')
         DOCKER_IMAGE_NAME = 'faniry123/mon_test'
         DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
+        OLD_DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER - 1}"
     }
 
     stages {
@@ -38,6 +39,15 @@ pipeline {
             steps {
                 script {
                     sh "docker push ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
+                }
+            }
+        }
+
+        stage('Remove Old Docker Image') {
+            steps {
+                script {
+                    // Remove the old Docker image
+                    docker.image("${OLD_DOCKER_IMAGE_TAG}").remove()
                 }
             }
         }
