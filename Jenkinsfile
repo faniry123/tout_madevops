@@ -37,7 +37,7 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    docker.push("${DOCKER_IMAGE_TAG}")
+                   sh "docker.push("${DOCKER_IMAGE_TAG}")"
                     //sh "docker push ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
                 }
             }
