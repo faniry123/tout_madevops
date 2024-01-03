@@ -46,6 +46,14 @@ pipeline {
     }
 
     post {
+        success {
+            echo 'La pipeline a été exécutée avec succès!'
+        }
+        
+        failure {
+            echo 'La pipeline a échoué. Des actions correctives sont nécessaires.'
+        }
+        
         always {
             sh 'docker logout'
         }
