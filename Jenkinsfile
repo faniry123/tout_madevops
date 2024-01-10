@@ -6,18 +6,18 @@ pipeline {
         DOCKER_IMAGE_NAME = 'faniry123/ma_front_html'
         DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
         OLD_DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER - 1}"
-        //Slack_tokens
+        // Slack tokens
         slack_tokens = 'slack_token'
-        //Slack_channel
+        // Slack channel
         slackSend_channel = ''
-        //front or Back or API
+        // Front or Back or API
         first_imagename = ''
-        //Client Name
+        // Client Name
         client = ''
         // Language
         second_image_name = ''
         // Image name
-        image_name = '${first_imagename}_${client}_${second_image_name}'
+        image_name = "${first_imagename}_${client}_${second_image_name}"
     }
 
     stages {
@@ -25,6 +25,7 @@ pipeline {
             steps {
                 echo 'Running HTML tests...'
                 // Add your HTML test commands here
+            }
             post {
                 success {
                     slackSend(
@@ -47,7 +48,6 @@ pipeline {
                     )
                 }
             }
-            
         }
 
         stage('Build') {
@@ -76,7 +76,6 @@ pipeline {
                 }
             }
         }
-
     }
 
     post {
