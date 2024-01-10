@@ -6,6 +6,18 @@ pipeline {
         DOCKER_IMAGE_NAME = 'faniry123/ma_front_html'
         DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
         OLD_DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER - 1}"
+        //Slack_tokens
+        slack_tokens = 'Slack _okens'
+        //Slack_channel
+        slackSend_channel = ''
+        //front or Back or API
+        first_imagename = ''
+        //Client Name
+        client = ''
+        // Language
+        second_image_name = ''
+        // Image name
+        image_name = '${first_imagename}_${client}_${second_image_name}'
     }
 
     stages {
@@ -14,6 +26,15 @@ pipeline {
                 echo 'Running HTML tests...'
                 // Add your HTML test commands here
             }
+            post {
+                success {
+                    slackSend channel: "${slackSend_channel}", message: "-------------------***************Test bebebebe stage succeeded***************-----------------", teamDomain: 'faniry', tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
+                }
+                failure {
+                    slackSend channel: "${slackSend_channel}", message: "Test stage failed", teamDomain: 'faniry', tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
+                }
+            }
+            
         }
 
         stage('Build') {
