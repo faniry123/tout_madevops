@@ -7,7 +7,7 @@ pipeline {
         DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
         OLD_DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER - 1}"
         //Slack_tokens
-        slack_tokens = 'Slack _okens'
+        slack_tokens = 'slack_token'
         //Slack_channel
         slackSend_channel = ''
         //front or Back or API
@@ -28,10 +28,10 @@ pipeline {
             }
             post {
                 success {
-                    slackSend channel: "${slackSend_channel}", message: "-------------------***************Test bebebebe stage succeeded***************-----------------", teamDomain: 'faniry', tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
+                    slackSend channel: "${slackSend_channel}", message: "-------------------***************Test bebebebe stage succeeded***************-----------------", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
                 }
                 failure {
-                    slackSend channel: "${slackSend_channel}", message: "Test stage failed", teamDomain: 'faniry', tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
+                    slackSend channel: "${slackSend_channel}", message: "Test stage failed", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
                 }
             }
             
