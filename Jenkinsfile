@@ -56,6 +56,37 @@ pipeline {
                     docker.build("${DOCKER_IMAGE_TAG}", '.')
                 }
             }
+            post {
+                success {
+                    script {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
+                            slackSend(
+                                color: '#36a64f',
+                                message: "BUILD réussi!",
+                                channel: "${SLACK_CHANNEL}",
+                                teamDomain: 'fanirysiege',
+                                tokenCredentialId: "${SLACK_CREDENTIALS_ID}",
+                                iconEmoji: ':thumbsup:'
+                            )
+                        }
+                    }
+                }
+                failure {
+                    script {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
+                            slackSend(
+                                color: '#ff0000',
+                                message: "Échec du BUILD!",
+                                channel: "${SLACK_CHANNEL}",
+                                teamDomain: 'fanirysiege',
+                                tokenCredentialId: "${SLACK_CREDENTIALS_ID}",
+                                iconEmoji: ':thumbsdown:'
+                            )
+                        }
+                    }
+                }
+            }
+            
         }
 
         stage('Login to Docker Hub') {
