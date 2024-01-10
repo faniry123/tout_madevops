@@ -8,7 +8,7 @@ pipeline {
         OLD_DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER - 1}"
         // Slack tokens
         slack_tokens = credentials('slack_token')
-        SLACK_CHANNEL = 'slacknotification'
+        SLACK_CHANNEL = '#slacknotification'
     }
 
     stages {
@@ -18,27 +18,36 @@ pipeline {
                 // Add your HTML test commands here
             }
             post {
-                success {
-                    slackSend( 
-                        message: "-------------------*************** Test bebebebe stage succeeded ***************-----------------",
-                        channel: "${SLACK_CHANNEL}",
-                        teamDomain: 'fanirysiege',
-                        tokenCredentialId: "${slack_tokens}",
-                        color: 'good',
-                        iconEmoji: ':thumbsup:'
-                    )
-                }
-                failure {
+        success {
+            script {
+                withCredentials([string(credentialsId: 'slack_token', variable: 'SLACK_TOKEN')]) {
                     slackSend(
-                        message: "Test stage failed",
+                        color: '#36a64f',
+                        message: "Build réussi!",
                         channel: "${SLACK_CHANNEL}",
                         teamDomain: 'fanirysiege',
-                        tokenCredentialId: "${slack_tokens}",
-                        color: 'danger',
-                        iconEmoji: ':thumbsdown:'
+                        tokenCredentialId: 'slack_token',
+                        emoji: ':thumbsup:'
                     )
                 }
             }
+        }
+
+        failure {
+            script {
+                withCredentials([string(credentialsId: 'slack_token', variable: 'SLACK_TOKEN')]) {
+                    slackSend(
+                        color: '#ff0000',
+                        message: "Échec du build!",
+                        channel: "${SLACK_CHANNEL}",
+                        teamDomain: 'fanirysiege',
+                        tokenCredentialId: 'slack_token',
+                        emoji: ':thumbsdown:'
+                    )
+                }
+            }
+        }
+    }
         }
 
         stage('Build') {
