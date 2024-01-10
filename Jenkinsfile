@@ -17,10 +17,10 @@ pipeline {
                 echo 'Running HTML tests...'
                 // Add your HTML test commands here
             }
-            post {
+           post {
         success {
             script {
-                withCredentials([string(credentialsId: 'slack_token', variable: 'SLACK_TOKEN')]) {
+                withCredentials([usernamePassword(credentialsId: 'slack_token', usernameVariable: 'SLACK_USER', passwordVariable: 'SLACK_TOKEN')]) {
                     slackSend(
                         color: '#36a64f',
                         message: "Build réussi!",
@@ -35,7 +35,7 @@ pipeline {
 
         failure {
             script {
-                withCredentials([string(credentialsId: 'slack_token', variable: 'SLACK_TOKEN')]) {
+                withCredentials([usernamePassword(credentialsId: 'slack_token', usernameVariable: 'SLACK_USER', passwordVariable: 'SLACK_TOKEN')]) {
                     slackSend(
                         color: '#ff0000',
                         message: "Échec du build!",
