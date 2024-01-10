@@ -7,17 +7,8 @@ pipeline {
         DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
         OLD_DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER - 1}"
         // Slack tokens
-        slack_tokens = 'slack_token'
-        // Slack channel
-        slacknotification = ''
-        // Front or Back or API
-       // first_imagename = ''
-        // Client Name
-      //  client = ''
-        // Language
-       // second_image_name = ''
-        // Image name
-        //image_name = "${first_imagename}_${client}_${second_image_name}"
+        slack_tokens = credentials('slack_token')
+        SLACK_CHANNEL = 'slacknotification'
     }
 
     stages {
@@ -29,7 +20,7 @@ pipeline {
             post {
                 success {
                     slackSend(
-                        channel: "${slacknotification}",
+                        channel: "${SLACK_CHANNEL}",
                         message: "-------------------*************** Test bebebebe stage succeeded ***************-----------------",
                         teamDomain: 'fanirysiege',
                         tokenCredentialId: "${slack_tokens}",
@@ -39,7 +30,7 @@ pipeline {
                 }
                 failure {
                     slackSend(
-                        channel: "${slacknotification}",
+                        channel: "${SLACK_CHANNEL}",
                         message: "Test stage failed",
                         teamDomain: 'fanirysiege',
                         tokenCredentialId: "${slack_tokens}",
