@@ -7,8 +7,8 @@ pipeline {
         DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
         OLD_DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER - 1}"
         // Slack tokens
-        slack_tokens = credentials('slack_token')
         SLACK_CHANNEL = '#slacknotification'
+        SLACK_CREDENTIALS_ID = 'slack_token'
     }
 
     stages {
@@ -17,20 +17,37 @@ pipeline {
                 echo 'Running HTML tests...'
                 // Add your HTML test commands here
             }
-           post {
+          post {
         success {
             script {
-                withCredentials([usernamePassword(credentialsId: 'slack_token', usernameVariable: 'SLACK_USER', passwordVariable: 'SLACK_TOKEN')]) {
+                withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
                     slackSend(
                         color: '#36a64f',
-                        message: "Build réussi!",
+                        message: "TEST réussi!",
                         channel: "${SLACK_CHANNEL}",
                         teamDomain: 'fanirysiege',
-                        tokenCredentialId: 'slack_token',
-                        emoji: ':thumbsup:'
+                        tokenCredentialId: "${SLACK_CREDENTIALS_ID}",
+                        iconEmoji: ':thumbsup:'
                     )
                 }
             }
+        }
+
+        failure {
+            script {
+                withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
+                    slackSend(
+                        color: '#ff0000',
+                        message: "Échec du TEST!",
+                        channel: "${SLACK_CHANNEL}",
+                        teamDomain: 'fanirysiege',
+                        tokenCredentialId: "${SLACK_CREDENTIALS_ID}",
+                        iconEmoji: ':thumbsdown:'
+                    )
+                }
+            }
+        }
+    }
         }
 
         failure {
