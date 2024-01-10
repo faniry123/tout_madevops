@@ -9,7 +9,7 @@ pipeline {
         // Slack tokens
         slack_tokens = 'slack_token'
         // Slack channel
-        slackSend_channel = ''
+        slacknotification = ''
         // Front or Back or API
         first_imagename = ''
         // Client Name
@@ -29,7 +29,7 @@ pipeline {
             post {
                 success {
                     slackSend(
-                        channel: "${slackSend_channel}",
+                        channel: "${slacknotification}",
                         message: "-------------------*************** Test bebebebe stage succeeded ***************-----------------",
                         teamDomain: 'fanirysiege',
                         tokenCredentialId: "${slack_tokens}",
@@ -39,7 +39,7 @@ pipeline {
                 }
                 failure {
                     slackSend(
-                        channel: "${slackSend_channel}",
+                        channel: "${slacknotification}",
                         message: "Test stage failed",
                         teamDomain: 'fanirysiege',
                         tokenCredentialId: "${slack_tokens}",
