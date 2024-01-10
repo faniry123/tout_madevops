@@ -25,13 +25,26 @@ pipeline {
             steps {
                 echo 'Running HTML tests...'
                 // Add your HTML test commands here
-            }
             post {
                 success {
-                    slackSend channel: "${slackSend_channel}", message: "-------------------***************Test bebebebe stage succeeded***************-----------------", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
+                    slackSend(
+                        channel: "${slackSend_channel}",
+                        message: "-------------------*************** Test bebebebe stage succeeded ***************-----------------",
+                        teamDomain: 'fanirysiege',
+                        tokenCredentialId: "${slack_tokens}",
+                        color: 'good',
+                        iconEmoji: ':thumbsup:'
+                    )
                 }
                 failure {
-                    slackSend channel: "${slackSend_channel}", message: "Test stage failed", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
+                    slackSend(
+                        channel: "${slackSend_channel}",
+                        message: "Test stage failed",
+                        teamDomain: 'fanirysiege',
+                        tokenCredentialId: "${slack_tokens}",
+                        color: 'danger',
+                        iconEmoji: ':thumbsdown:'
+                    )
                 }
             }
             
