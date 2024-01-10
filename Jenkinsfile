@@ -11,13 +11,13 @@ pipeline {
         // Slack channel
         slacknotification = ''
         // Front or Back or API
-        first_imagename = ''
+       // first_imagename = ''
         // Client Name
-        client = ''
+      //  client = ''
         // Language
-        second_image_name = ''
+       // second_image_name = ''
         // Image name
-        image_name = "${first_imagename}_${client}_${second_image_name}"
+        //image_name = "${first_imagename}_${client}_${second_image_name}"
     }
 
     stages {
