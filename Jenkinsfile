@@ -19,9 +19,9 @@ pipeline {
             }
             post {
                 success {
-                    slackSend(
-                        channel: "${SLACK_CHANNEL}",
+                    slackSend( 
                         message: "-------------------*************** Test bebebebe stage succeeded ***************-----------------",
+                        channel: "${SLACK_CHANNEL}",
                         teamDomain: 'fanirysiege',
                         tokenCredentialId: "${slack_tokens}",
                         color: 'good',
@@ -30,8 +30,8 @@ pipeline {
                 }
                 failure {
                     slackSend(
-                        channel: "${SLACK_CHANNEL}",
                         message: "Test stage failed",
+                        channel: "${SLACK_CHANNEL}",
                         teamDomain: 'fanirysiege',
                         tokenCredentialId: "${slack_tokens}",
                         color: 'danger',
