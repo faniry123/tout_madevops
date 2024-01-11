@@ -98,12 +98,74 @@ pipeline {
                     }
                 }
             }
+
+             post {
+                success {
+                    script {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
+                            slackSend(
+                                color: '#36a64f',
+                                message: "LOGIN TO DOCKER réussi!",
+                                channel: "${SLACK_CHANNEL}",
+                                teamDomain: 'fanirysiege',
+                                tokenCredentialId: "${SLACK_CREDENTIALS_ID}",
+                                iconEmoji: ':thumbsup:'
+                            )
+                        }
+                    }
+                }
+                failure {
+                    script {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
+                            slackSend(
+                                color: '#ff0000',
+                                message: "Échec du LOGIN TO DOCKER!",
+                                channel: "${SLACK_CHANNEL}",
+                                teamDomain: 'fanirysiege',
+                                tokenCredentialId: "${SLACK_CREDENTIALS_ID}",
+                                iconEmoji: ':thumbsdown:'
+                            )
+                        }
+                    }
+                }
+            }
         }
 
         stage('Push to Docker Hub') {
             steps {
                 script {
                     sh "docker push ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
+                }
+            }
+
+            post {
+                success {
+                    script {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
+                            slackSend(
+                                color: '#36a64f',
+                                message: "Push to Docker Hub réussi!",
+                                channel: "${SLACK_CHANNEL}",
+                                teamDomain: 'fanirysiege',
+                                tokenCredentialId: "${SLACK_CREDENTIALS_ID}",
+                                iconEmoji: ':thumbsup:'
+                            )
+                        }
+                    }
+                }
+                failure {
+                    script {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
+                            slackSend(
+                                color: '#ff0000',
+                                message: "Échec du Push to Docker Hub!",
+                                channel: "${SLACK_CHANNEL}",
+                                teamDomain: 'fanirysiege',
+                                tokenCredentialId: "${SLACK_CREDENTIALS_ID}",
+                                iconEmoji: ':thumbsdown:'
+                            )
+                        }
+                    }
                 }
             }
         }
