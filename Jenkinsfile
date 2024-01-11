@@ -110,17 +110,6 @@ pipeline {
     }
 
     post {
-        success {
-            echo 'La pipeline a été exécutée avec succès!'
-            emailext subject: 'Build réussi',
-                      body: 'La pipeline a été exécutée avec succès.',
-                      to: 'pascalindenis70@gmail.com',
-                      attachLog: true
-        }
-        
-        failure {
-            echo 'La pipeline a échoué. Des actions correctives sont nécessaires.'
-        }
         
         always {
             sh 'docker logout'
