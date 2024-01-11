@@ -177,4 +177,35 @@ pipeline {
             sh 'docker logout'
         }
     }
+
+    post {
+                success {
+                    script {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
+                            slackSend(
+                                color: '#36a64f',
+                                message: "PIPLINE HTML réussi!",
+                                channel: "${SLACK_CHANNEL}",
+                                teamDomain: 'fanirysiege',
+                                tokenCredentialId: "${SLACK_CREDENTIALS_ID}",
+                                iconEmoji: ':thumbsup:'
+                            )
+                        }
+                    }
+                }
+                failure {
+                    script {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
+                            slackSend(
+                                color: '#ff0000',
+                                message: "Échec PIPLINE HTML!",
+                                channel: "${SLACK_CHANNEL}",
+                                teamDomain: 'fanirysiege',
+                                tokenCredentialId: "${SLACK_CREDENTIALS_ID}",
+                                iconEmoji: ':thumbsdown:'
+                            )
+                        }
+                    }
+                }
+            }
 }
