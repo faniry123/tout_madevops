@@ -1,3 +1,5 @@
+#Use ARG to define a build-time variable
+ARG BUILD_NUMBER
 # Utilisez une image légère basée sur Nginx pour servir les fichiers HTML
 FROM nginx:alpine
 
