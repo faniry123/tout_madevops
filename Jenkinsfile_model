@@ -75,19 +75,21 @@ pipeline {
             steps {
                 script {
                     // Push the Docker image with the specific version
-                    sh "docker push faniry123/${image_name}"
                     sh "docker push faniry123/${image_name}:build_${BUILD_NUMBER}"
+                    sh "docker push faniry123/${image_name}"
+                    
                 }
             }
             post {
                 success {
-                    slackSend channel: "${slackSend_channel}", message: "(${env.JOB_NAME})  ${BUILD_DISPLAY_NAME}  de est disponible dans Dockehub", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
+                    slackSend channel: "${slackSend_channel}", message: "(${env.JOB_NAME}) Le Build ${BUILD_DISPLAY_NAME}  est disponible dans Dockehub", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
                 }
                 failure {
-                    slackSend channel: "${slackSend_channel}", message: "(${env.JOB_NAME}) ${BUILD_DISPLAY_NAME} a échoué lors du Push vers Docker Hub!", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
+                    slackSend channel: "${slackSend_channel}", message: "(${env.JOB_NAME}) Le Build ${BUILD_DISPLAY_NAME} a échoué lors du Push vers Docker Hub!", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
                     retry(1) {
-                        sh "docker push faniry123/${image_name}"
                         sh "docker push faniry123/${image_name}:build_${BUILD_NUMBER}"
+                        sh "docker push faniry123/${image_name}"
+                        
                     }
                 }
             }
@@ -97,6 +99,8 @@ pipeline {
         always {
             // Log out of Docker Hub
             sh 'docker logout'
+            sh 'docker rmi faniry123/${image_name}:build_${BUILD_NUMBER}'
+            sh 'docker rmi faniry123/${image_name}'
         }
     }
 }
