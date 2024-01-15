@@ -58,22 +58,7 @@ pipeline {
                 }
             }
         }
-         stage('Checkout') {
-            steps {
-                script {
-                    // Checkout the code from the GitHub repository
-                    git branch: "${branch_git}", credentialsId: 'GitHub', url: "${git_url}"
-                }
-            }
-            post {
-                success {
-                    slackSend channel: "${slackSend_channel}", message: "-------------------***************Checkout stage succeeded***************-----------------", teamDomain: 'fanirysiege', tokenCredentialId: "$SLACK_CREDENTIALS_ID", color: 'good', iconEmoji: ':thumbsup:'
-                }
-                failure {
-                    slackSend channel: "${slackSend_channel}", message: "Checkout stage failed", teamDomain: 'fanirysieg', tokenCredentialId: "$SLACK_CREDENTIALS_ID", color: 'danger', iconEmoji: ':thumbsdown:'
-                }
-            }
-        }
+         
          stage('Commiter') {
             steps {
                 script {
