@@ -59,19 +59,7 @@ pipeline {
             }
         }
          
-         stage('Commiter') {
-            steps {
-                script {
-                    def COMMITTER_EMAIL
-                    if (isUnix()) {
-                        COMMITTER_EMAIL = sh(script: "git --no-pager show -s --format='%ae'", returnStdout: true).trim()
-                    } else {
-                        COMMITTER_EMAIL = bat(script: "git --no-pager show -s --format=%%ae", returnStdout: true).split('\r\n')[2].trim()
-                    }
-                    slackSend channel: "${SLACK_CHANNEL}", failOnError: true, message: "(${JOB_NAME}) ${COMMITTER_EMAIL} a initilisé le build numéro ${BUILD_DISPLAY_NAME}", teamDomain: 'fanirysiege', tokenCredentialId: "$SLACK_CREDENTIALS_ID", color: 'good', iconEmoji: ':thumbsup:'
-                }
-            }
-        }
+         
         stage('Build') {
             steps {
                 script {
