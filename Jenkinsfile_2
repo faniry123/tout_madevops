@@ -30,7 +30,7 @@ pipeline {
             post {
                 success {
                     script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_CREDENTIALS_ID')]) {
                             slackSend(
                                 color: '#36a64f',
                                 message: "TEST réussi!",
@@ -44,7 +44,7 @@ pipeline {
                 }
                 failure {
                     script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_CREDENTIALS_ID')]) {
                             slackSend(
                                 color: '#ff0000',
                                 message: "Échec du TEST!",
@@ -97,7 +97,7 @@ pipeline {
             post {
                 success {
                     script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_CREDENTIALS_ID')]) {
                             slackSend(
                                 color: '#36a64f',
                                 message: "${JOB_NAME} Le BUILD ${BUILD_DISPLAY_NAME} de ${COMMITTER_EMAIL} est une réussite!",
@@ -111,7 +111,7 @@ pipeline {
                 }
                 failure {
                     script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_CREDENTIALS_ID')]) {
                             slackSend(
                                 color: '#ff0000',
                                 message: "${JOB_NAME} Le BUILD ${BUILD_DISPLAY_NAME} de ${COMMITTER_EMAIL} est un échec!",
@@ -140,7 +140,7 @@ pipeline {
              post {
                 success {
                     script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_CREDENTIALS_ID')]) {
                             slackSend(
                                 color: '#36a64f',
                                 message: "LOGIN TO DOCKER réussi!",
@@ -154,7 +154,7 @@ pipeline {
                 }
                 failure {
                     script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_CREDENTIALS_ID')]) {
                             slackSend(
                                 color: '#ff0000',
                                 message: "Échec du LOGIN TO DOCKER!",
@@ -180,7 +180,7 @@ pipeline {
             post {
                 success {
                     script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_CREDENTIALS_ID')]) {
                             slackSend(
                                 color: '#36a64f',
                                 message: "${JOB_NAME} L'image $DOCKER_IMAGE_TAG de ${COMMITTER_EMAIL} est disponible dans Dockehub",
@@ -194,7 +194,7 @@ pipeline {
                 }
                 failure {
                     script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_CREDENTIALS_ID')]) {
                             slackSend(
                                 color: '#ff0000',
                                 message: "${JOB_NAME} L'image $DOCKER_IMAGE_TAG de ${COMMITTER_EMAIL} a échoué lors du Push vers Docker Hub!",
