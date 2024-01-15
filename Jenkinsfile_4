@@ -12,7 +12,7 @@ pipeline {
         //Slack_channel
         slackSend_channel = '#slacknotification'
         //front or Back or API
-        first_imagename = 'Front'
+        first_imagename = 'front'
         //Client Name
         client = 'cg'
         // Language
