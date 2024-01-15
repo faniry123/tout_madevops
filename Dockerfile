@@ -1,5 +1,7 @@
 #Use ARG to define a build-time variable
-ARG BUILD_NUMBER
+ARG BUILD_NUMBER=1
+ENV BUILD_NUMBER=$BUILD_NUMBER
+
 # Utilisez une image légère basée sur Nginx pour servir les fichiers HTML
 FROM nginx:alpine
 LABEL version="1.0.${BUILD_NUMBER}"
