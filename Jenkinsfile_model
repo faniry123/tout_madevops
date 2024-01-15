@@ -21,7 +21,7 @@ pipeline {
         // Image name
         image_name = '${tiers}_${client}_${project}_${language}'
         //
-        DOCKER_TAG_NAME = '${image_name}:${BUILD_NUMBER}
+        DOCKER_TAG_NAME = '${image_name}:${BUILD_NUMBER}'
     }
     stages {
         stage('Commiter') {
