@@ -1,0 +1,136 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('id_hub')
+        TIERS = 'front'
+        CLIENT = 'cg'
+        PROJECT = 'my_aux'
+        LANGUAGE = 'react_prod'
+        DOCKER_IMAGE_NAME = "faniry123/${TIERS}_${CLIENT}_${PROJECT}_${LANGUAGE}"
+        DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
+        OLD_DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER - 1}"
+
+        SLACK_CHANNEL = '#slacknotification'
+        SLACK_CREDENTIALS_ID = 'token_slack'
+    }
+
+    stages {
+        stage('Test HTML') {
+            steps {
+                echo 'Running HTML tests...'
+                // Add your HTML test commands here
+            }
+            post {
+                success {
+                    script {
+                        notifySlack('TEST réussi!', '#36a64f', ':thumbsup:')
+                    }
+                }
+                failure {
+                    script {
+                        notifySlack('Échec du TEST!', '#ff0000', ':thumbsdown:')
+                    }
+                }
+            }
+        }
+
+        stage('Commiter') {
+            steps {
+                script {
+                    def COMMITTER_EMAIL
+                    try {
+                        COMMITTER_EMAIL = getCommitterEmail()
+                    } catch (Exception e) {
+                        COMMITTER_EMAIL = 'Unknown'
+                    }
+                    notifySlack("(${JOB_NAME}) ${COMMITTER_EMAIL} a initilisé le build numéro ${BUILD_DISPLAY_NAME}", '#36a64f', ':thumbsup:')
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    sh "docker build --build-arg BUILD_NUMBER=${BUILD_NUMBER} -t $DOCKER_IMAGE_TAG -t $DOCKER_IMAGE_NAME --no-cache ."
+                }
+            }
+            post {
+                success {
+                    script {
+                        notifySlack("${JOB_NAME} Le BUILD ${BUILD_DISPLAY_NAME} de ${COMMITTER_EMAIL} est une réussite!", '#36a64f', ':thumbsup:')
+                    }
+                }
+                failure {
+                    script {
+                        notifySlack("${JOB_NAME} Le BUILD ${BUILD_DISPLAY_NAME} de ${COMMITTER_EMAIL} est un échec!", '#ff0000', ':thumbsdown:')
+                    }
+                }
+            }
+        }
+
+        stage('Login to Docker Hub') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'id_hub', usernameVariable: 'DOCKERHUB_CREDENTIALS_USR', passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW')]) {
+                        sh "echo \$DOCKERHUB_CREDENTIALS_PSW | docker login -u \$DOCKERHUB_CREDENTIALS_USR --password-stdin"
+                    }
+                }
+            }
+            post {
+                success {
+                    script {
+                        notifySlack("LOGIN TO DOCKER réussi!", '#36a64f', ':thumbsup:')
+                    }
+                }
+                failure {
+                    script {
+                        notifySlack("Échec du LOGIN TO DOCKER!", '#ff0000', ':thumbsdown:')
+                    }
+                }
+            }
+        }
+
+        stage('Push to Docker Hub') {
+            steps {
+                script {
+                    sh "docker push $DOCKER_IMAGE_TAG"
+                    sh "docker push $DOCKER_IMAGE_NAME"
+                }
+            }
+            post {
+                success {
+                    script {
+                        notifySlack("${JOB_NAME} L'image $DOCKER_IMAGE_TAG de ${COMMITTER_EMAIL} est disponible dans Docker Hub", '#36a64f', ':thumbsup:')
+                    }
+                }
+                failure {
+                    script {
+                        notifySlack("${JOB_NAME} L'image $DOCKER_IMAGE_TAG de ${COMMITTER_EMAIL} a échoué lors du Push vers Docker Hub!", '#ff0000', ':thumbsdown:')
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker logout'
+        }
+    }
+
+    def notifySlack(message, color, icon) {
+        script {
+            withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
+                slackSend(
+                    color: color,
+                    message: message,
+                    channel: "${SLACK_CHANNEL}",
+                    teamDomain: 'fanirysiege',
+                    tokenCredentialId: "${SLACK_CREDENTIALS_ID}",
+                    iconEmoji: icon
+                )
+            }
+        }
+    }
+}
