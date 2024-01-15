@@ -64,10 +64,8 @@ pipeline {
             steps {
                 script {
                     //docker.build("${DOCKER_IMAGE_TAG}", '.')
-                   // sh "docker build --build-arg BUILD_NUMBER=${BUILD_NUMBER} -t $DOCKER_IMAGE_TAG -t $DOCKER_IMAGE_NAME --no-cache ."
-                   docker.build("DOCKER_IMAGE_NAME:${BUILD_NUMBER}", "--no-cache .")
-
-                    //docker.build("$DOCKER_IMAGE_NAME:$BUILD_NUMBER", "--build-arg BUILD_NUMBER=${BUILD_NUMBER} --no-cache .")
+                   sh "docker build --build-arg BUILD_NUMBER=${BUILD_NUMBER} -t $DOCKER_IMAGE_TAG -t $DOCKER_IMAGE_NAME --no-cache ."
+                   
 
                 }
             }
