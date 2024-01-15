@@ -72,7 +72,7 @@ pipeline {
             steps {
                 script {
                     // Build the Docker image with tags
-                    sh "docker build -t faniry123/${image_name}:build_${BUILD_NUMBER} -t constedocker/${image_name} --no-cache ."
+                    sh "docker build -t faniry123/${image_name}:build_${BUILD_NUMBER} -t faniry123/${image_name} --no-cache ."
                 }
             }
             post('Build Docker Image') {
