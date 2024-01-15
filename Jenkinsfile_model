@@ -19,7 +19,7 @@ pipeline {
         // Language with env
         language = 'html'
         // Image name
-        image_name = '${tiers}_${client}_${project}_${language}'
+       def image_name = '${env.tiers}+"_"+${env.client}+"_"+${env.project}+"_"+${en.language}'
         //
         def DOCKER_TAG_NAME = '${env.image_name}:${env.BUILD_NUMBER}'
     }
@@ -122,6 +122,7 @@ pipeline {
         always {
             // Log out of Docker Hub
             sh 'docker logout'
+            sh 'docker image prune -f'
             
         }
     }
