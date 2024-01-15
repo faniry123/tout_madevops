@@ -19,9 +19,9 @@ pipeline {
         // Language with env
         language = 'html'
         // Image name
-        image_name = '${tiers}_${env.client}_+${env.project}_${en.language}'
+        image_name = '${tiers}_${client}_+${project}_${language}'
         //
-        def DOCKER_TAG_NAME = '${env.image_name}:${env.BUILD_NUMBER}'
+        DOCKER_TAG_NAME = '${image_name}:${BUILD_NUMBER}'
     }
     stages {
         stage('Commiter') {
