@@ -135,7 +135,7 @@ pipeline {
 
     def notifySlack(message, color, icon) {
         script {
-            withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_CREDENTIALS_ID')]) {
+            withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
                 slackSend(
                     color: color,
                     message: message,
