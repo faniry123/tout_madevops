@@ -19,7 +19,7 @@ pipeline {
         // Language with env
         language = 'html'
         // Image name
-       def image_name = '${env.tiers}+"_"+${env.client}+"_"+${env.project}+"_"+${en.language}'
+        image_name = '${tiers}_${env.client}_+${env.project}_${en.language}'
         //
         def DOCKER_TAG_NAME = '${env.image_name}:${env.BUILD_NUMBER}'
     }
