@@ -2,7 +2,7 @@
 ARG BUILD_NUMBER
 # Utilisez une image légère basée sur Nginx pour servir les fichiers HTML
 FROM nginx:alpine
-
+LABEL version="1.0.${BUILD_NUMBER}"
 # Copiez le fichier index.html dans le répertoire de base de Nginx
 COPY index.html /usr/share/nginx/html
 
