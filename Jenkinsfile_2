@@ -30,7 +30,7 @@ pipeline {
             post {
                 success {
                     script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_CREDENTIALS_ID')]) {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
                             slackSend(
                                 color: '#36a64f',
                                 message: "TEST réussi!",
@@ -44,7 +44,7 @@ pipeline {
                 }
                 failure {
                     script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_CREDENTIALS_ID')]) {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
                             slackSend(
                                 color: '#ff0000',
                                 message: "Échec du TEST!",
@@ -83,7 +83,7 @@ pipeline {
                     } else {
                         COMMITTER_EMAIL = bat(script: "git --no-pager show -s --format=%%ae", returnStdout: true).split('\r\n')[2].trim()
                     }
-                    slackSend channel: "${slackSend_channel}", failOnError: true, message: "(${JOB_NAME}) ${COMMITTER_EMAIL} a initilisé le build numéro ${BUILD_DISPLAY_NAME}", teamDomain: 'fanirysiege', tokenCredentialId: "$SLACK_CREDENTIALS_ID", color: 'good', iconEmoji: ':thumbsup:'
+                    slackSend channel: "${SLACK_CHANNEL}", failOnError: true, message: "(${JOB_NAME}) ${COMMITTER_EMAIL} a initilisé le build numéro ${BUILD_DISPLAY_NAME}", teamDomain: 'fanirysiege', tokenCredentialId: "$SLACK_CREDENTIALS_ID", color: 'good', iconEmoji: ':thumbsup:'
                 }
             }
         }
@@ -97,7 +97,7 @@ pipeline {
             post {
                 success {
                     script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_CREDENTIALS_ID')]) {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
                             slackSend(
                                 color: '#36a64f',
                                 message: "${JOB_NAME} Le BUILD ${BUILD_DISPLAY_NAME} de ${COMMITTER_EMAIL} est une réussite!",
@@ -111,7 +111,7 @@ pipeline {
                 }
                 failure {
                     script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_CREDENTIALS_ID')]) {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
                             slackSend(
                                 color: '#ff0000',
                                 message: "${JOB_NAME} Le BUILD ${BUILD_DISPLAY_NAME} de ${COMMITTER_EMAIL} est un échec!",
@@ -140,7 +140,7 @@ pipeline {
              post {
                 success {
                     script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_CREDENTIALS_ID')]) {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
                             slackSend(
                                 color: '#36a64f',
                                 message: "LOGIN TO DOCKER réussi!",
@@ -154,7 +154,7 @@ pipeline {
                 }
                 failure {
                     script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_CREDENTIALS_ID')]) {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
                             slackSend(
                                 color: '#ff0000',
                                 message: "Échec du LOGIN TO DOCKER!",
@@ -180,7 +180,7 @@ pipeline {
             post {
                 success {
                     script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_CREDENTIALS_ID')]) {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
                             slackSend(
                                 color: '#36a64f',
                                 message: "${JOB_NAME} L'image $DOCKER_IMAGE_TAG de ${COMMITTER_EMAIL} est disponible dans Dockehub",
@@ -194,7 +194,7 @@ pipeline {
                 }
                 failure {
                     script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_CREDENTIALS_ID')]) {
+                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
                             slackSend(
                                 color: '#ff0000',
                                 message: "${JOB_NAME} L'image $DOCKER_IMAGE_TAG de ${COMMITTER_EMAIL} a échoué lors du Push vers Docker Hub!",
