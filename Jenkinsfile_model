@@ -3,13 +3,13 @@ pipeline {
     environment {
         //All your env required
         DOCKERHUB_CREDENTIALS = credentials('id_hub')
-        ma_hub = 'faniry123' 
+       // ma_hub = 'faniry123' 
         //Slack_tokens
         slack_tokens = 'token_slack'
         //Slack_channel
         slackSend_channel = '#slacknotification'
         //teamDomain_Slack
-        ma_teamDomain = 'fanirysiege'
+        //ma_teamDomain = 'fanirysiege'
         //front or Back or API
         tiers = 'front'
         //Client Name
@@ -46,10 +46,10 @@ pipeline {
             }
             post('Login to Docker Hub') {
                 success {
-                    slackSend channel: "${slackSend_channel}", message: "Login to DockerHub  succeeded", teamDomain: "${ma_teamDomain}", tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
+                    slackSend channel: "${slackSend_channel}", message: "Login to DockerHub  succeeded", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
                 }
                 failure {
-                    slackSend channel: "${slackSend_channel}", message: "Login to DockerHub  failed", teamDomain: "${ma_teamDomain}", tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
+                    slackSend channel: "${slackSend_channel}", message: "Login to DockerHub  failed", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
                 }
             }
         }
@@ -62,10 +62,10 @@ pipeline {
             }
             post('Build Docker Image') {
                 success {
-                    slackSend channel: "${slackSend_channel}", message: "${JOB_NAME} Le BUILD ${BUILD_DISPLAY_NAME} de ${COMMITTER_EMAIL} est une réussite!", teamDomain: "${ma_teamDomain}", tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
+                    slackSend channel: "${slackSend_channel}", message: "${JOB_NAME} Le BUILD ${BUILD_DISPLAY_NAME} de ${COMMITTER_EMAIL} est une réussite!", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
                 }
                 failure {
-                    slackSend channel: "${slackSend_channel}", message: "${JOB_NAME} Le BUILD ${BUILD_DISPLAY_NAME} de ${COMMITTER_EMAIL} est un échec!", teamDomain: "${ma_teamDomain}", tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
+                    slackSend channel: "${slackSend_channel}", message: "${JOB_NAME} Le BUILD ${BUILD_DISPLAY_NAME} de ${COMMITTER_EMAIL} est un échec!", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
                 }
             }
         }
@@ -79,10 +79,10 @@ pipeline {
             }
             post {
                 success {
-                    slackSend channel: "${slackSend_channel}", message: "${JOB_NAME} L'image $DOCKER_IMAGE_TAG de ${COMMITTER_EMAIL} est disponible dans Dockehub", teamDomain: "${ma_teamDomain}", tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
+                    slackSend channel: "${slackSend_channel}", message: "${JOB_NAME} L'image $DOCKER_IMAGE_TAG de ${COMMITTER_EMAIL} est disponible dans Dockehub", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
                 }
                 failure {
-                    slackSend channel: "${slackSend_channel}", message: "${JOB_NAME} L'image $DOCKER_IMAGE_TAG de ${COMMITTER_EMAIL} a échoué lors du Push vers Docker Hub!", teamDomain: "${ma_teamDomain}", tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
+                    slackSend channel: "${slackSend_channel}", message: "${JOB_NAME} L'image $DOCKER_IMAGE_TAG de ${COMMITTER_EMAIL} a échoué lors du Push vers Docker Hub!", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
                     retry(1) {
                         sh "docker push faniry123/${image_name}"
                         sh "docker push faniry123/${image_name}:build_${BUILD_NUMBER}"
