@@ -57,7 +57,7 @@ pipeline {
             steps {
                 script {
                     // Build the Docker image with tags
-                    sh "docker build --build-arg BUILD_NUMBER=${BUILD_NUMBER} -t ${ ma_hub}/${image_name}:build_${BUILD_NUMBER} -t ${ ma_hub}/${image_name} --no-cache ."
+                    sh "docker build --build-arg BUILD_NUMBER=${BUILD_NUMBER} -t faniry123/${image_name}:build_${BUILD_NUMBER} -t faniry123/${image_name} --no-cache ."
                 }
             }
             post('Build Docker Image') {
@@ -73,8 +73,8 @@ pipeline {
             steps {
                 script {
                     // Push the Docker image with the specific version
-                    sh "docker push ${ ma_hub}/${image_name}"
-                    sh "docker push ${ ma_hub}/${image_name}:build_${BUILD_NUMBER}"
+                    sh "docker push faniry123/${image_name}"
+                    sh "docker push faniry123/${image_name}:build_${BUILD_NUMBER}"
                 }
             }
             post {
@@ -84,8 +84,8 @@ pipeline {
                 failure {
                     slackSend channel: "${slackSend_channel}", message: "${JOB_NAME} L'image $DOCKER_IMAGE_TAG de ${COMMITTER_EMAIL} a échoué lors du Push vers Docker Hub!", teamDomain: "${ma_teamDomain}", tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
                     retry(1) {
-                        sh "docker push ${ ma_hub}/${image_name}"
-                        sh "docker push ${ ma_hub}/${image_name}:build_${BUILD_NUMBER}"
+                        sh "docker push faniry123/${image_name}"
+                        sh "docker push faniry123/${image_name}:build_${BUILD_NUMBER}"
                     }
                 }
             }
