@@ -3,14 +3,20 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('id_hub')
-        TIERS = 'front'
-        CLIENT = 'cg'
-        PROJECT = 'my_aux'
-        LANGUAGE = 'react_prod'
-        DOCKER_IMAGE_NAME = "faniry123/${TIERS}_${CLIENT}_${PROJECT}_${LANGUAGE}"
+        git_url = ''  // Provide the actual git URL
+        // Front or Back or API
+        tiers = 'front'
+        // Client Name
+        client = 'cg'
+        // Project
+        project = 'my_aux'
+        // Language with env
+        language = 'react_prod'
+        DOCKER_IMAGE_NAME = "faniry123/${tiers}_${client}_${project}_${language}"
         DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
         OLD_DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER - 1}"
 
+        // Slack tokens
         SLACK_CHANNEL = '#slacknotification'
         SLACK_CREDENTIALS_ID = 'token_slack'
     }
@@ -24,13 +30,30 @@ pipeline {
             post {
                 success {
                     script {
-                        notifySlack('TEST réussi!', '#36a64f', ':thumbsup:')
+                        notifySlack("TEST réussi!", '#36a64f', ':thumbsup:')
                     }
                 }
                 failure {
                     script {
-                        notifySlack('Échec du TEST!', '#ff0000', ':thumbsdown:')
+                        notifySlack("Échec du TEST!", '#ff0000', ':thumbsdown:')
                     }
+                }
+            }
+        }
+
+        stage('Checkout') {
+            steps {
+                script {
+                    // Checkout the code from the GitHub repository
+                    git branch: "${branch_git}", credentialsId: 'GitHub', url: "${git_url}"
+                }
+            }
+            post {
+                success {
+                    notifySlack("Checkout stage succeeded", '#36a64f', ':thumbsup:')
+                }
+                failure {
+                    notifySlack("Checkout stage failed", '#ff0000', ':thumbsdown:')
                 }
             }
         }
@@ -39,10 +62,10 @@ pipeline {
             steps {
                 script {
                     def COMMITTER_EMAIL
-                    try {
-                        COMMITTER_EMAIL = getCommitterEmail()
-                    } catch (Exception e) {
-                        COMMITTER_EMAIL = 'Unknown'
+                    if (isUnix()) {
+                        COMMITTER_EMAIL = sh(script: "git --no-pager show -s --format='%ae'", returnStdout: true).trim()
+                    } else {
+                        COMMITTER_EMAIL = bat(script: "git --no-pager show -s --format=%%ae", returnStdout: true).split('\r\n')[2].trim()
                     }
                     notifySlack("(${JOB_NAME}) ${COMMITTER_EMAIL} a initilisé le build numéro ${BUILD_DISPLAY_NAME}", '#36a64f', ':thumbsup:')
                 }
@@ -52,19 +75,16 @@ pipeline {
         stage('Build') {
             steps {
                 script {
+                    //docker.build("${DOCKER_IMAGE_TAG}", '.')
                     sh "docker build --build-arg BUILD_NUMBER=${BUILD_NUMBER} -t $DOCKER_IMAGE_TAG -t $DOCKER_IMAGE_NAME --no-cache ."
                 }
             }
             post {
                 success {
-                    script {
-                        notifySlack("${JOB_NAME} Le BUILD ${BUILD_DISPLAY_NAME} de ${COMMITTER_EMAIL} est une réussite!", '#36a64f', ':thumbsup:')
-                    }
+                    notifySlack("${JOB_NAME} Le BUILD ${BUILD_DISPLAY_NAME} de ${COMMITTER_EMAIL} est une réussite!", '#36a64f', ':thumbsup:')
                 }
                 failure {
-                    script {
-                        notifySlack("${JOB_NAME} Le BUILD ${BUILD_DISPLAY_NAME} de ${COMMITTER_EMAIL} est un échec!", '#ff0000', ':thumbsdown:')
-                    }
+                    notifySlack("${JOB_NAME} Le BUILD ${BUILD_DISPLAY_NAME} de ${COMMITTER_EMAIL} est un échec!", '#ff0000', ':thumbsdown:')
                 }
             }
         }
@@ -72,6 +92,7 @@ pipeline {
         stage('Login to Docker Hub') {
             steps {
                 script {
+                    // Log in to Docker Hub using credentials
                     withCredentials([usernamePassword(credentialsId: 'id_hub', usernameVariable: 'DOCKERHUB_CREDENTIALS_USR', passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW')]) {
                         sh "echo \$DOCKERHUB_CREDENTIALS_PSW | docker login -u \$DOCKERHUB_CREDENTIALS_USR --password-stdin"
                     }
@@ -79,14 +100,10 @@ pipeline {
             }
             post {
                 success {
-                    script {
-                        notifySlack("LOGIN TO DOCKER réussi!", '#36a64f', ':thumbsup:')
-                    }
+                    notifySlack("LOGIN TO DOCKER réussi!", '#36a64f', ':thumbsup:')
                 }
                 failure {
-                    script {
-                        notifySlack("Échec du LOGIN TO DOCKER!", '#ff0000', ':thumbsdown:')
-                    }
+                    notifySlack("Échec du LOGIN TO DOCKER!", '#ff0000', ':thumbsdown:')
                 }
             }
         }
@@ -98,16 +115,13 @@ pipeline {
                     sh "docker push $DOCKER_IMAGE_NAME"
                 }
             }
+
             post {
                 success {
-                    script {
-                        notifySlack("${JOB_NAME} L'image $DOCKER_IMAGE_TAG de ${COMMITTER_EMAIL} est disponible dans Docker Hub", '#36a64f', ':thumbsup:')
-                    }
+                    notifySlack("${JOB_NAME} L'image $DOCKER_IMAGE_TAG de ${COMMITTER_EMAIL} est disponible dans Docker Hub", '#36a64f', ':thumbsup:')
                 }
                 failure {
-                    script {
-                        notifySlack("${JOB_NAME} L'image $DOCKER_IMAGE_TAG de ${COMMITTER_EMAIL} a échoué lors du Push vers Docker Hub!", '#ff0000', ':thumbsdown:')
-                    }
+                    notifySlack("${JOB_NAME} L'image $DOCKER_IMAGE_TAG de ${COMMITTER_EMAIL} a échoué lors du Push vers Docker Hub!", '#ff0000', ':thumbsdown:')
                 }
             }
         }
@@ -121,7 +135,7 @@ pipeline {
 
     def notifySlack(message, color, icon) {
         script {
-            withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
+            withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_CREDENTIALS_ID')]) {
                 slackSend(
                     color: color,
                     message: message,
