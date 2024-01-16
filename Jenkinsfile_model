@@ -21,7 +21,7 @@ pipeline {
         // Image name
         image_name = "${tiers}_${client}_${project}_${language}"
         //
-        DOCKER_TAG_NAME = '${image_name}:${BUILD_NUMBER}'
+        DOCKER_TAG_NAME = "${image_name}:${BUILD_NUMBER}"
     }
     stages {
         stage('Commiter') {
@@ -29,9 +29,9 @@ pipeline {
                 script {
                     def COMMITTER_EMAIL
                     if (isUnix()) {
-                        COMMITTER_EMAIL = "sh(script: "git --no-pager show -s --format='%ae'", returnStdout: true).trim()"
+                        COMMITTER_EMAIL = sh(script: git --no-pager show -s --format='%ae'", returnStdout: true).trim()
                     } else {
-                        COMMITTER_EMAIL = "bat(script: "git --no-pager show -s --format=%%ae", returnStdout: true).split('\r\n')[2].trim()"
+                        COMMITTER_EMAIL = bat(script: git --no-pager show -s --format=%%ae", returnStdout: true).split('\r\n')[2].trim()
                     }
                     slackSend channel: "${slackSend_channel}", failOnError: true, message: "(${JOB_NAME}) ${COMMITTER_EMAIL} a initilisé le build numéro ${BUILD_DISPLAY_NAME}", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
                 }
@@ -64,10 +64,10 @@ pipeline {
             }
             post('Build Docker Image') {
                 success {
-                    slackSend channel: "${slackSend_channel}", message: "(${JOB_NAME}) Le Build ${BUILD_DISPLAY_NAME} de ${COMMITTER_EMAIL} est une réussite!", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
+                    slackSend channel: "${slackSend_channel}", message: "(${JOB_NAME}) L'image ${DOCKER_TAG_NAME} a été buildé avec réussite!", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
                 }
                 failure {
-                    slackSend channel: "${slackSend_channel}", message: "(${JOB_NAME}) Le Build ${BUILD_DISPLAY_NAME} de ${COMMITTER_EMAIL}  est un échec!", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
+                    slackSend channel: "${slackSend_channel}", message: "(${JOB_NAME}) Le Build de l'image  ${DOCKER_TAG_NAME} est un échec!", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
                 }
             }
         }
@@ -82,10 +82,10 @@ pipeline {
             }
             post {
                 success {
-                    slackSend channel: "${slackSend_channel}", message: "(${env.JOB_NAME}) Le Build ${BUILD_DISPLAY_NAME}  est disponible dans Dockehub", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
+                    slackSend channel: "${slackSend_channel}", message: "(${env.JOB_NAME}) l'image  ${DOCKER_TAG_NAME}  est disponible dans Dockehub", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
                 }
                 failure {
-                    slackSend channel: "${slackSend_channel}", message: "(${env.JOB_NAME}) Le Build ${BUILD_DISPLAY_NAME} a échoué lors du Push vers Docker Hub!", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
+                    slackSend channel: "${slackSend_channel}", message: "(${env.JOB_NAME}) Le push de l'image  ${DOCKER_TAG_NAME} a échoué !", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
                     retry(1) {
                         sh "docker push faniry123/${image_name}:build_${BUILD_NUMBER}"
                         sh "docker push faniry123/${image_name}"
@@ -106,10 +106,10 @@ pipeline {
             } 
             post {
                 success {
-                    slackSend channel: "${slackSend_channel}", message: "(${env.JOB_NAME}) La suppression d'image ${BUILD_DISPLAY_NAME}  est reussi", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
+                    slackSend channel: "${slackSend_channel}", message: "(${env.JOB_NAME}) La suppression d'image ${DOCKER_TAG_NAME}  est reussi", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
                 }
                 failure {
-                    slackSend channel: "${slackSend_channel}", message: "(${env.JOB_NAME}) Le suppression d'image ${BUILD_DISPLAY_NAME} a échoué!", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
+                    slackSend channel: "${slackSend_channel}", message: "(${env.JOB_NAME}) Le suppression d'image ${DOCKER_TAG_NAME} a échoué!", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
                     }
             }
         }
