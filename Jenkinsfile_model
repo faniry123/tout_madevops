@@ -34,14 +34,13 @@ pipeline {
                     } else {
                         COMMITTER_EMAIL = bat(script: "git --no-pager show -s --format=%%ae", returnStdout: true).split('\r\n')[2].trim()
                     }
-                    slackSend channel: "${slackSend_channel}", failOnError: true, message: "(${JOB_NAME}) ${COMMITTER_EMAIL} a initilisé le build numéro ${BUILD_DISPLAY_NAME}", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
+                    slackSend channel: "${slackSend_channel}", failOnError: true, message: "(${JOB_NAME}) ${COMMITTER_EMAIL} a initilisé le build numéro ${BUILD_DISPLAY_NAME}", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
                 }
             }
         }
         stage('Login to Docker Hub') {
             steps {
                 script {
-                    echo "${DOCKERHUB_CREDENTIALS}"
                     // Log in to Docker Hub using credentials
                     withCredentials([usernamePassword(credentialsId: "${DOCKERHUB_CREDENTIALS}", usernameVariable: 'DOCKERHUB_CREDENTIALS_USR', passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW')]) {
                         sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
@@ -60,9 +59,6 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                     echo "${github_username}" 
-                     echo "${slack_domain}" 
-                     echo "${DOCKERHUB_CREDENTIALS}"
                     // Build the Docker image with tags
                     sh "docker build --build-arg BUILD_NUMBER=${BUILD_NUMBER} -t ${github_username}/${image_name}:build_${BUILD_NUMBER} -t ${github_username}/${image_name} --no-cache ."
                 }
