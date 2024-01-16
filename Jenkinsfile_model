@@ -29,9 +29,9 @@ pipeline {
                 script {
                     def COMMITTER_EMAIL
                     if (isUnix()) {
-                        COMMITTER_EMAIL = sh(script: "git --no-pager show -s --format='%ae'", returnStdout: true).trim()
+                        COMMITTER_EMAIL = "sh(script: "git --no-pager show -s --format='%ae'", returnStdout: true).trim()"
                     } else {
-                        COMMITTER_EMAIL = bat(script: "git --no-pager show -s --format=%%ae", returnStdout: true).split('\r\n')[2].trim()
+                        COMMITTER_EMAIL = "bat(script: "git --no-pager show -s --format=%%ae", returnStdout: true).split('\r\n')[2].trim()"
                     }
                     slackSend channel: "${slackSend_channel}", failOnError: true, message: "(${JOB_NAME}) ${COMMITTER_EMAIL} a initilisé le build numéro ${BUILD_DISPLAY_NAME}", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
                 }
