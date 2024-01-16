@@ -64,10 +64,10 @@ pipeline {
             }
             post('Build Docker Image') {
                 success {
-                    slackSend channel: "${slackSend_channel}", message: "(${JOB_NAME}) Le Build ${image_name} est une réussite!", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
+                    slackSend channel: "${slackSend_channel}", message: "(${JOB_NAME}) Le Build ${BUILD_DISPLAY_NAME} de ${COMMITTER_EMAIL} est une réussite!", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
                 }
                 failure {
-                    slackSend channel: "${slackSend_channel}", message: "(${JOB_NAME}) Le Build ${image_name} de  est un échec!", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
+                    slackSend channel: "${slackSend_channel}", message: "(${JOB_NAME}) Le Build ${BUILD_DISPLAY_NAME} de ${COMMITTER_EMAIL}  est un échec!", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
                 }
             }
         }
