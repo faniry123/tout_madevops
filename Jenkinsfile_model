@@ -19,7 +19,7 @@ pipeline {
         // Language with env
         language = 'html'
         // Image name
-        image_name = '${tiers}_${client}_${project}_${language}'
+        image_name = "${tiers}_${client}_${project}_${language}"
         //
         DOCKER_TAG_NAME = '${image_name}:${BUILD_NUMBER}'
     }
