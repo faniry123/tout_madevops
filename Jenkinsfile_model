@@ -110,7 +110,6 @@ pipeline {
                 failure {
                     slackSend channel: "${slackSend_channel}", message: "(${env.JOB_NAME}) Le suppression d'image ${BUILD_DISPLAY_NAME} a échoué!", teamDomain: 'fanirysiege', tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
                     }
-                }
             }
         }
     }
