@@ -99,8 +99,8 @@ pipeline {
             steps {
                 script {
                     // Cleaning the Docker image with the specific version
-                    sh 'docker image rm -f faniry123/${image_name}:build_${BUILD_NUMBER}'
-                    sh 'docker image rm -f faniry123/${image_name}'  
+                    sh "docker image rm -f faniry123/${image_name}:build_${BUILD_NUMBER}" || true
+                    sh "docker image rm -f faniry123/${image_name}" || true  
                 }
             } 
             post {
