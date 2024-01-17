@@ -50,7 +50,7 @@ pipeline {
                     def password = vault('secrets/secret/git', 'password')
 
                     // Se connecter à Docker Hub
-                    sh "echo $password | docker login -u $username --password-stdin"
+                    sh "echo $password | git login -u $username --password-stdin"
             }
         }
     }
