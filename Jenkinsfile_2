@@ -42,21 +42,20 @@ pipeline {
         stage('Login to Git') {
             steps {
                 script {
-                    // Log in to Docker Hub using credentials
+                    // Récupérer les informations d'identification depuis HashiCorp Vault
                     withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'id_vault', vaultUrl: 'http://172.22.1.57:8080'], vaultSecrets: [[path: 'secrets/secret/git', secretValues: [[vaultKey: 'username'], [vaultKey: 'password']]]]) {
-                        sh "echo $password | docker login -u $username --password-stdin"
-                    }
-                }
-            }
-            post('Login to Docker Hub') {
-                success {
-                    slackSend channel: "${slackSend_channel}", message: "Login to Git  succeeded", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
-                }
-                failure {
-                    slackSend channel: "${slackSend_channel}", message: "Login to Git  failed", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
-                }
+                
+                    // Récupérer les valeurs des secrets
+                    def username = vault('secrets/secret/git', 'username')
+                    def password = vault('secrets/secret/git', 'password')
+
+                    // Se connecter à Docker Hub
+                    sh "echo $password | docker login -u $username --password-stdin"
             }
         }
+    }
+}
+
 
         stage('Login to Docker Hub') {
             steps {
