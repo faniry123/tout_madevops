@@ -43,7 +43,7 @@ pipeline {
                 script {
                     // Log in to Docker Hub using credentials
                     withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'vault_token', vaultUrl: 'http://172.22.1.98:8200'], vaultSecrets: [[path: 'secrets/creds/docker', secretValues: [[vaultKey: 'username'], [vaultKey: 'password']]]]) {
-                        sh "echo $password | docker login -u $username --password-stdin"
+                        sh "echo \${password} | docker login -u \{$username} --password-stdin"
                     }
                 }
             }
