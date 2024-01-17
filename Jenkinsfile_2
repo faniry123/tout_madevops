@@ -43,8 +43,8 @@ pipeline {
             steps {
                 script {
                     // Log in to Docker Hub using credentials
-                    withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'vault_token', vaultUrl: 'http://172.22.1.57:8200'], vaultSecrets: [[path: 'secrets/secret/git', secretValues: [[envVar: 'gitusername', vaultKey: 'username']]], [path: 'secrets/secret/git', secretValues: [[envVar: 'gitpassword', vaultKey: 'password']]]]) {
-                        sh "echo $gitpassword | docker login -u $gitusername --password-stdin"
+                    withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'id_vault', vaultUrl: 'http://172.22.1.57:8080'], vaultSecrets: [[path: 'secrets/secret/git', secretValues: [[vaultKey: 'username'], [vaultKey: 'password']]]]) {
+                        sh "echo $password | docker login -u $username --password-stdin"
                     }
                 }
             }
@@ -62,8 +62,8 @@ pipeline {
             steps {
                 script {
                     // Log in to Docker Hub using credentials
-                    withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'vault_token', vaultUrl: 'http://172.22.1.57:8200'], vaultSecrets: [[path: 'secrets/secret/git', secretValues: [[envVar: 'dockerhubusername', vaultKey: 'username']]], [path: 'secrets/secret/git', secretValues: [[envVar: 'dockerhubpassword', vaultKey: 'password']]]]) {
-                        sh "echo $dockerhubpassword | docker login -u $dockerhubusername --password-stdin"
+                    withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'id_vault', vaultUrl: 'http://172.22.1.57:8080'], vaultSecrets: [[path: 'secrets/secret/dockerhub', secretValues: [[vaultKey: 'username'], [vaultKey: 'password']]]]) {
+                        sh "echo password | docker login -u $username --password-stdin"
                     }
                 }
             }
