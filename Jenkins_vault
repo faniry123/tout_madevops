@@ -42,7 +42,7 @@ pipeline {
             steps {
                 script {
                     // Log in to Docker Hub using credentials
-                    withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'vault_token', vaultUrl: 'http://172.22.1.98:8200'], vaultSecrets: [[path: 'secrets/creds/git', secretValues: [[envVar: 'gitusername', vaultKey: 'username']]], [path: 'secrets/creds/git', secretValues: [[envVar: 'gitpassword', vaultKey: 'password']]]]) {
+                    withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'vault_token', vaultUrl: 'http://172.22.1.98:8200'], vaultSecrets: [[path: 'secrets/creds/docker', secretValues: [[vaultKey: 'username'], [vaultKey: 'password']]]]) {
                         sh "echo $gitpassword | docker login -u $gitusername --password-stdin"
                     }
                 }
