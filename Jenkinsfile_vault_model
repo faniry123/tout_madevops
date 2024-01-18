@@ -12,8 +12,8 @@ pipeline {
         vault_token = 'vault_token'
         url_vault = 'http://172.22.1.57:8200'
         path_vault = 'secrets/creds/dockerhub'
-        vault_usename = "username"
-        vault_password = "password"
+        vault_usename = 'username'
+        vault_password = 'password'
       
         //front or Back or API
         tiers = 'front'
