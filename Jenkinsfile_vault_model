@@ -9,6 +9,7 @@ pipeline {
         slack_domain = 'fanirysiege'
       
         //configuration vault dockerhub
+        vault_token = 'vault_token'
         url_vault = 'http://172.22.1.57:8200'
         path_vault = 'secrets/creds/dockerhub'
         vault_usename = "username"
@@ -47,7 +48,7 @@ pipeline {
                     echo "${vault_usename}"
                     echo "${url_vault}"
                     // Log in to Docker Hub using credentials
-                    withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'vault_token', vaultUrl: "${url_vault}"], vaultSecrets: [[path: "${path_vault}", secretValues: [[vaultKey: "${vault_usename}"], [vaultKey: "${vault_password}"]]]]) {
+                    withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: "${vault_token}", vaultUrl: "${url_vault}"], vaultSecrets: [[path: "${path_vault}", secretValues: [[vaultKey: "${vault_usename}"], [vaultKey: "${vault_password}"]]]]) {
                         sh "echo ${vault_usename} | docker login -u ${vault_password} --password-stdin"
                     }
                 }
