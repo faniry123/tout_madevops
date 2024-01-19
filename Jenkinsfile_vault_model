@@ -50,7 +50,7 @@ pipeline {
         stage('Login to Docker Hub') {
             steps {
                 script {
-                    echo "${vault_dockerhub_usename}"
+                    echo "${vault_dockerhub_username}"
                     echo "${url_vault}"
                     // Log in to Docker Hub using credentials
                     withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: "${vault_token}", vaultUrl: "${url_vault}"], vaultSecrets: [[path: "${path_vault}", secretValues: [[vaultKey: "${vault_dockerhub_username}"], [vaultKey: "${vault_dockerhub_password}"]]]]) {
