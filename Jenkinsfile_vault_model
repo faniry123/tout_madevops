@@ -25,7 +25,7 @@ pipeline {
         //Client Name
         client = 'ostie'
         //project
-        project = 'test_html'
+        project = 'test_html_front_1'
         // Language with env
         language = 'html'
         // Image name
