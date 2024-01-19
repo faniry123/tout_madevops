@@ -17,8 +17,8 @@ pipeline {
         vault_token = 'vault_token'
         url_vault = 'http://172.22.1.57:8200'
         path_vault = 'secrets/creds/dockerhub'
-        vault_usename = 'username'
-        vault_password = 'password'
+        vault_dockerhub_usename = 'username'
+        vault_dockerhub_password = 'password'
       
         //front or Back or API
         tiers = 'front'
@@ -53,7 +53,7 @@ pipeline {
                     echo "${vault_usename}"
                     echo "${url_vault}"
                     // Log in to Docker Hub using credentials
-                    withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: "${vault_token}", vaultUrl: "${url_vault}"], vaultSecrets: [[path: "${path_vault}", secretValues: [[vaultKey: "${vault_usename}"], [vaultKey: "${vault_password}"]]]]) {
+                    withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: "${vault_token}", vaultUrl: "${url_vault}"], vaultSecrets: [[path: "${path_vault}", secretValues: [[vaultKey: "${vault_dockerhub_usename}"], [vaultKey: "${vault_dockerhub_password}"]]]]) {
                         sh "echo \$password | docker login -u \$username --password-stdin"
                     }
                 }
@@ -112,8 +112,8 @@ pipeline {
                 script {
                     // Cleaning the Docker image with the specific version
                     echo "${image_name}"
-                    sh "docker  rmi -f ${github_username}/${image_name}:build_${BUILD_NUMBER}" 
-                    sh "docker  rmi -f ${github_username}/${image_name}"  
+                    sh "docker  rm -f ${github_username}/${image_name}:build_${BUILD_NUMBER}" 
+                    sh "docker  rm -f ${github_username}/${image_name}"  
                 }
             } 
             post {
