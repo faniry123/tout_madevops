@@ -7,7 +7,7 @@ pipeline {
         github_username = "faniry123"
 
         //Slack_tokens
-        slack_tokens = 'slack_token'
+        slack_tokens = 'slck_token'
         //Slack_channel
         slackSend_channel = '#slacknotification'
         //teamDomain_Slack
