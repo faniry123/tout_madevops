@@ -59,7 +59,7 @@ pipeline {
 
 
         stage('Build Docker Image') {
-            if(env.BRANCH_NAME = ''){
+            if(env.BRANCH_NAME = ' '){
                 echo "branche vide"
             }else if (env.BRANCH_NAME = 'main'){
                 steps {
