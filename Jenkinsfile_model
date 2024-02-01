@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         //All your env required
-        DOCKERHUB_CREDENTIALS = "id_hub"
+        DOCKERHUB_CREDENTIALS = 'id_hub'
         //github
         github_username = "faniry123" 
         //Slack_tokens
