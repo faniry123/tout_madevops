@@ -66,6 +66,16 @@ pipeline {
             }
         }
 
+        stage('Afficher la branche Git') {
+            steps {
+                script {
+                    def currentBranch = env.BRANCH_NAME
+                    echo "La branche Git actuelle est : ${currentBranch}"
+                }
+            }
+        }
+
+
         stage('Afficher le nom de la branche') {
             steps {
                 script {
