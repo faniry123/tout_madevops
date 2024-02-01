@@ -57,6 +57,14 @@ pipeline {
             }
         }
 
+        stage('Afficher le nom de la branche') {
+            steps {
+                script {
+                    echo "Le nom de la branche est : ${env.BRANCH_NAME}"
+                }
+            }
+        }
+
 
         stage('Build Docker Image') {
     steps {
