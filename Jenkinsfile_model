@@ -119,6 +119,7 @@ pipeline {
         always {
             // Log out of Docker Hub
             sh 'docker logout'
+            sh "docker  rmi -f ${github_username}/${image_name}:build_${BUILD_NUMBER}"
             sh 'docker image prune -f'
             
         }

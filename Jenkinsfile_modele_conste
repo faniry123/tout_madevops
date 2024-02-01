@@ -2,32 +2,23 @@ pipeline {
     agent any
     environment {
         //All your env required
-        //DOCKERHUB_CREDENTIALS = 'id_hub'
+        DOCKERHUB_CREDENTIALS = 'DockerHub'
         //github
-       // github_username = "faniry123"
-
+        github_username = "constedocker" 
         //Slack_tokens
-        slack_tokens = 'slck_token'
+        slack_tokens = 'Slack _okens'
         //Slack_channel
-        slackSend_channel = '#slacknotification'
+        slackSend_channel = '#adh_prod'
         //teamDomain_Slack
-        slack_domain = 'fanirysiege'
-      
-        //configuration vault dockerhub
-        vault_token = 'vault_token'
-        url_vault = 'http://172.22.1.57:8200'
-        path_vault = 'secrets/creds/dockerhub'
-        vault_dockerhub_username = 'username'
-        vault_dockerhub_password = 'password'
-      
+        slack_domain = 'consteslack'
         //front or Back or API
-        tiers = 'front'
+        tiers = 'back'
         //Client Name
         client = 'ostie'
         //project
-        project = 'test_html_front_1'
+        project = 'adh'
         // Language with env
-        language = 'html'
+        language = 'js_prod'
         // Image name
         image_name = "${tiers}_${client}_${project}_${language}"
         //
@@ -50,11 +41,9 @@ pipeline {
         stage('Login to Docker Hub') {
             steps {
                 script {
-                    echo "${vault_dockerhub_username}"
-                    echo "${url_vault}"
                     // Log in to Docker Hub using credentials
-                    withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: "${vault_token}", vaultUrl: "${url_vault}"], vaultSecrets: [[path: "${path_vault}", secretValues: [[vaultKey: "${vault_dockerhub_username}"], [vaultKey: "${vault_dockerhub_password}"]]]]) {
-                        sh "echo \$password | docker login -u \$username --password-stdin"
+                    withCredentials([usernamePassword(credentialsId: "${DOCKERHUB_CREDENTIALS}", usernameVariable: 'DOCKERHUB_CREDENTIALS_USR', passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW')]) {
+                        sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
                     }
                 }
             }
@@ -130,7 +119,6 @@ pipeline {
         always {
             // Log out of Docker Hub
             sh 'docker logout'
-            sh "docker  rmi -f ${github_username}/${image_name}:build_${BUILD_NUMBER}"
             sh 'docker image prune -f'
             
         }
