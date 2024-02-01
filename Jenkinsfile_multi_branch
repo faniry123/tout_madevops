@@ -76,7 +76,7 @@ pipeline {
                         buildImage()
                         sendSlackMessage(dockerBuildSuccessMessage, 'good')
                         break
-                    case 'fron_2':
+                    case 'front_2':
                         buildImage()
                         sendSlackMessage(dockerBuildSuccessMessage, 'good')
                         break
