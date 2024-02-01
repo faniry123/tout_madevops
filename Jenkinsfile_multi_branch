@@ -68,15 +68,15 @@ pipeline {
                 echo 'Branche vide'
             } else {
                 switch (branchName) {
+                    case 'main':
+                        buildImage()
+                        sendSlackMessage(dockerBuildSuccessMessage, 'good')
+                        break
                     case 'front_1':
                         buildImage()
                         sendSlackMessage(dockerBuildSuccessMessage, 'good')
                         break
-                    case 'front_2':
-                        buildImage()
-                        sendSlackMessage(dockerBuildSuccessMessage, 'good')
-                        break
-                    case 'autre':
+                    case 'fron_2':
                         buildImage()
                         sendSlackMessage(dockerBuildSuccessMessage, 'good')
                         break
