@@ -64,7 +64,7 @@ pipeline {
             def dockerBuildSuccessMessage = "(${JOB_NAME}) L'image ${DOCKER_TAG_NAME} a été buildée avec succès!"
             def dockerBuildFailureMessage = "(${JOB_NAME}) Le Build de l'image ${DOCKER_TAG_NAME} est un échec."
 
-            def branchName = env.BRANCH_NAME
+            branchName = env.BRANCH_NAME
 
             if (branchName == '') {
                 echo 'Branche vide'
@@ -86,7 +86,7 @@ pipeline {
                     default:
                         echo "branche error"
                         break
-                }}}}
+                }
             }
         }
     
