@@ -63,7 +63,7 @@ pipeline {
                 script {
                     switch(branch) { 
                         case 'main': 
-                            echo 'main'
+                            echo 'branch'
                             break
                         case "front": 
                             MY_CREDENTIALS = 'creds-prod'
