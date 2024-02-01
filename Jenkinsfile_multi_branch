@@ -86,7 +86,7 @@ pipeline {
                     default:
                         echo "branche error"
                         break
-                }
+                }}}}
             }
         }
     
