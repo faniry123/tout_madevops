@@ -59,36 +59,42 @@ pipeline {
 
 
         stage('Build Docker Image') {
-            steps {
-                script {
-                    switch(branch) { 
-                        case 'main': 
-                           steps {
-                                script {
-                                    // Build the Docker image with tags
-                                    sh "docker build --build-arg BUILD_NUMBER=${BUILD_NUMBER} -t ${github_username}/${image_name}:build_${BUILD_NUMBER} -t ${github_username}/${image_name} --no-cache ."
-                                }
-                            }   
-            post('Build Docker Image') {
-                success {
-                    slackSend channel: "${slackSend_channel}", message: "(${JOB_NAME}) L'image ${DOCKER_TAG_NAME} a été buildé avec réussite!", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
-                }
-                failure {
-                    slackSend channel: "${slackSend_channel}", message: "(${JOB_NAME}) Le Build de l'image  ${DOCKER_TAG_NAME} est un échec!", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
-                }
-            }     
-                            break
-                        case "front": 
-                            MY_CREDENTIALS = 'creds-prod'
-                            MY_ENVIRONMENT = 'staging' 
-                            break
-                       default:
-                            println("Branch value error: " + branch)
-                            currentBuild.getRawBuild().getExecutor().interrupt(Result.FAILURE)
-                    }
-                }
+    steps {
+        script {
+            switch (branch) {
+                case 'main':
+                    buildMainImage()
+                    break
+                case 'front':
+                    MY_CREDENTIALS = 'creds-prod'
+                    MY_ENVIRONMENT = 'staging'
+                    break
+                default:
+                    println("Branch value error: " + branch)
+                    currentBuild.getRawBuild().getExecutor().interrupt(Result.FAILURE)
             }
         }
+    }
+}
+
+def buildMainImage() {
+    steps {
+        script {
+            // Build the Docker image with tags
+            sh "docker build --build-arg BUILD_NUMBER=${BUILD_NUMBER} -t ${github_username}/${image_name}:build_${BUILD_NUMBER} -t ${github_username}/${image_name} --no-cache ."
+        }
+    }
+
+    post('Build Docker Image') {
+        success {
+            slackSend channel: "${slackSend_channel}", message: "(${JOB_NAME}) L'image ${DOCKER_TAG_NAME} a été buildée avec succès!", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
+        }
+        failure {
+            slackSend channel: "${slackSend_channel}", message: "(${JOB_NAME}) Le Build de l'image ${DOCKER_TAG_NAME} est un échec!", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
+        }
+    }
+}
+
             
 
         stage('Push Image') {
