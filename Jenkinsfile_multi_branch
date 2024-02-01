@@ -59,7 +59,8 @@ pipeline {
 
 
         stage('Build Docker Image') {
-            if (env.BRANCH_NAME = 'main'){
+                echo '${env.BRANCH_NAME}'
+            if (${env.BRANCH_NAME} = 'main'){
                 steps {
                 script {
                     // Build the Docker image with tags
