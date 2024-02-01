@@ -87,22 +87,7 @@ pipeline {
             }
         }
 
-        def buildImage() {
-            script {
-                sh "docker build --build-arg BUILD_NUMBER=${BUILD_NUMBER} -t ${github_username}/${image_name}:build_${BUILD_NUMBER} -t ${github_username}/${image_name} --no-cache ."
-            }
-        }
-
-        def sendSlackMessage(message, color) {
-            post {
-                success {
-                    slackSend channel: "${slackSend_channel}", message: message, teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: color, iconEmoji: ':thumbsup:'
-                }
-                failure {
-                    slackSend channel: "${slackSend_channel}", message: message, teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
-                }
-            }
-        }
+        
 
         stage('Push Image') {
             steps {
@@ -147,6 +132,24 @@ pipeline {
             }
         }
     }
+
+        def buildImage() {
+            script {
+                sh "docker build --build-arg BUILD_NUMBER=${BUILD_NUMBER} -t ${github_username}/${image_name}:build_${BUILD_NUMBER} -t ${github_username}/${image_name} --no-cache ."
+            }
+        }
+
+        def sendSlackMessage(message, color) {
+            post {
+                success {
+                    slackSend channel: "${slackSend_channel}", message: message, teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: color, iconEmoji: ':thumbsup:'
+                }
+                failure {
+                    slackSend channel: "${slackSend_channel}", message: message, teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
+                }
+            }
+        }
+
     post {
         always {
             // Log out of Docker Hub
