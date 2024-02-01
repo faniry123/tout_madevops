@@ -41,7 +41,6 @@ pipeline {
             }
 
 
-
     }
     stages {
         stage('Commiter') {
@@ -85,6 +84,7 @@ pipeline {
 
             if (branchName == '') {
                 echo 'Branche vide'
+                echo '$branchName'
             } else {
                 switch (branchName) {
                     case 'prod':
