@@ -57,6 +57,15 @@ pipeline {
             }
         }
 
+        stage('Récupérer les branches Git') {
+            steps {
+                script {
+                    def branches = sh(script: 'git branch -r | awk -F/ \'/origin/ && ! /HEAD/{print $NF}\'', returnStdout: true).trim()
+                    echo "Liste des branches Git : ${branches}"
+                }
+            }
+        }
+
         stage('Afficher le nom de la branche') {
             steps {
                 script {
