@@ -72,7 +72,7 @@ pipeline {
                    // def currentBranch = env.BRANCH_NAME ?: 'front_1'
                     //echo "La branche Git actuelle est : ${currentBranch}"
                     def currentBranchGit = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
-                    echo "La branche Git actuelle (à partir de Git) est : ${currentBranchGit}"
+                    echo "La branche Git actuelle (à partir de Git) est de blabla: ${currentBranchGit}"
                 }
             }
         }
