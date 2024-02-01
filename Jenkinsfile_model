@@ -14,9 +14,9 @@ pipeline {
         //front or Back or API
         tiers = 'front'
         //Client Name
-        client = 'ostie'
+        client = 'test_jenkins'
         //project
-        project = 'test_html'
+        project = 'html'
         // Language with env
         language = 'html'
         // Image name
@@ -119,7 +119,6 @@ pipeline {
         always {
             // Log out of Docker Hub
             sh 'docker logout'
-            sh "docker  rmi -f ${github_username}/${image_name}:build_${BUILD_NUMBER}"
             sh 'docker image prune -f'
             
         }
