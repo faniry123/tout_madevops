@@ -84,20 +84,17 @@ pipeline {
                     switch(env.BRANCH_NAME) {
                         case 'main':
                             buildImage()
-                        break
+                            break
                         default:
                             echo "error"
                         break
+                    }
+                }
             }
         }
-    }
-}
-
-def buildImage() {
-    echo "bonjour il marche bien le branche: ${env.BRANCH_NAME}"
-}
-
-        
+        def buildImage() {
+            echo "bonjour il marche bien le branche: ${env.BRANCH_NAME}"
+        }
 
       
         
