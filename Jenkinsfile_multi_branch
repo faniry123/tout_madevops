@@ -81,7 +81,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    if (${name_branche} == 'main') {
+                    if ('${name_branche}' == 'main') {
                         echo "La branche utilisée est : ${name_branche}"
                     }
                 }
