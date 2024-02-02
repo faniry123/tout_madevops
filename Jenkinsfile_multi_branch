@@ -66,18 +66,7 @@ pipeline {
             }
         }
 
-        stage('Checkout de la branche Git') {
-            steps {
-                script {
-                    // Utilisation de la commande checkout pour passer à une branche spécifique
-                    checkout([$class: 'GitSCM', branches: [[name: 'front_1']]])
-
-                    // Vous pouvez également utiliser BRANCH_NAME si elle est définie
-                    def currentBranch = env.BRANCH_NAME ?: 'main'
-                    echo "Vous êtes maintenant sur la branche : ${currentBranch}"
-                }
-            }
-        }
+       
 
         stage('Afficher la branche Git') {
             steps {
@@ -85,7 +74,7 @@ pipeline {
                    // def currentBranch = env.BRANCH_NAME ?: 'front_1'
                     //echo "La branche Git actuelle est : ${currentBranch}"
                   // echo git branch --show-current
-                    def currentBranchGit = sh(script: 'git branch', returnStdout: true).trim()
+                    def currentBranchGit = sh(script: 'git symbolic-ref --short HEAD', returnStdout: true).trim()
                     echo "La branche Git actuelle (à partir de Git) est de blabla: ${currentBranchGit}"
                 }
             }
