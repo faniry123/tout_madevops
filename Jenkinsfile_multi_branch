@@ -1,7 +1,3 @@
-@NonCPS
-def getRawBuild() {
-    currentBuild.rawBuild
-}
 
 pipeline {
     agent any
