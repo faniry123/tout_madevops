@@ -4,6 +4,7 @@ def buildImage() {
             }
         }
 
+
 pipeline {
     agent any
     environment {
@@ -75,7 +76,7 @@ pipeline {
             steps {
                 script {
                     switch(env.BRANCH_NAME) {
-                        case '${branch_one}':
+                        case 'main':
                             buildImage()
                         break
                         case '${branch_two}':
