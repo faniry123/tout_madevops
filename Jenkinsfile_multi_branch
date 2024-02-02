@@ -104,7 +104,8 @@ pipeline {
                 }
             }
         }
-        
+      }
+   }
       
         
         stage('Push Image') {
