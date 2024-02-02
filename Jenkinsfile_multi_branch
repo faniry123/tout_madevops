@@ -24,7 +24,7 @@ pipeline {
         image_name = "${tiers}_${client}_${project}_${language}"
         //
         DOCKER_TAG_NAME = "${image_name}:${BUILD_NUMBER}"
-        name_branche = "${BRANCH_NAME}"
+        name_branche = "${env.BRANCH_NAME}"
     }
     stages {
         stage('Commiter') {
@@ -73,7 +73,7 @@ pipeline {
             steps {
                 script {
                     checkout scm
-                    echo "La branche actuelle est : ${env.BRANCH_NAME}"
+                    echo "La branche actuelle est : ${name_branche}"
                 }
             }
         }
