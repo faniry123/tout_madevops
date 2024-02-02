@@ -14,9 +14,9 @@ pipeline {
         github_username = "faniry123"
          //Name of different branch 
          branch_one = "main"
-         branch_two = 'front_1'
-         branch_three = 'front_2'
-         branch_for = ''
+         branch_two = "front_1"
+         branch_three = "front_2"
+         branch_for = ""
         //Slack_tokens
         slack_tokens = 'token_slack'
         //Slack_channel
@@ -80,13 +80,13 @@ pipeline {
                         case "${branch_one}":
                             buildImage()
                         break
-                        case '${branch_two}':
+                        case "${branch_two}":
                             buildImage()
                         break
-                        case '${branch_three}':
+                        case "${branch_three}":
                             buildImage()
                         break
-                        case '${branch_for}':
+                        case "${branch_for}":
                             buildImage()
                         break
                         default:
