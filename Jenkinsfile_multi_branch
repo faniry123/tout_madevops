@@ -1,3 +1,9 @@
+def buildImage() {
+            script {
+                sh "docker build --build-arg BUILD_NUMBER=${BUILD_NUMBER} -t ${github_username}/${image_name}:build_${BUILD_NUMBER} -t ${github_username}/${image_name} --no-cache ."
+            }
+        }
+
 
 pipeline {
     agent any
@@ -5,7 +11,12 @@ pipeline {
         //All your env required
         DOCKERHUB_CREDENTIALS = 'id_hub'
         //github
-        github_username = "faniry123" 
+        github_username = "faniry123"
+         //Name of different branch 
+         branch_one = "main"
+         branch_two = "front_1"
+         branch_three = "front_2"
+         branch_for = ""
         //Slack_tokens
         slack_tokens = 'token_slack'
         //Slack_channel
@@ -21,11 +32,12 @@ pipeline {
         // Language with env
         language = 'html'
         // Image name
-        image_name = "${tiers}_${client}_${project}_${language}"
+        image_name = "${tiers}_${client}_${project}_${language}_${env.BRANCH_NAME}"
         //
         DOCKER_TAG_NAME = "${image_name}:${BUILD_NUMBER}"
-        name_branche = "${env.BRANCH_NAME}"
     }
+
+    
     stages {
         stage('Commiter') {
             steps {
@@ -42,7 +54,7 @@ pipeline {
         }
         stage('Login to Docker Hub') {
             steps {
-                    echo "test blabla branche: ${name_branche}"
+                        echo "${branch_one}"
                 script {
                     // Log in to Docker Hub using credentials
                     withCredentials([usernamePassword(credentialsId: "${DOCKERHUB_CREDENTIALS}", usernameVariable: 'DOCKERHUB_CREDENTIALS_USR', passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW')]) {
@@ -60,24 +72,39 @@ pipeline {
             }
         }
 
-        stage('Récupérer les branches Git') {
+
+        stage('Build Docker Image') {
             steps {
                 script {
-                    def branches = sh(script: 'git branch -r | awk -F/ \'/origin/ && ! /HEAD/{print $NF}\'', returnStdout: true).trim()
-                    echo "Liste des branches Git : ${branches}"
+                    switch(env.BRANCH_NAME) {
+                        case "${branch_one}":
+                            buildImage()
+                        break
+                        case "${branch_two}":
+                            buildImage()
+                        break
+                        case "${branch_three}":
+                            buildImage()
+                        break
+                        case "${branch_for}":
+                            buildImage()
+                        break
+                        default:
+                            echo "error"
+                        break
+                    }
+                }
+            }
+            post('Build Docker Image') {
+                success {
+                    slackSend channel: "${slackSend_channel}", message: "(${JOB_NAME}) L'image ${DOCKER_TAG_NAME} a été buildé avec réussite!", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
+                }
+                failure {
+                    slackSend channel: "${slackSend_channel}", message: "(${JOB_NAME}) Le Build de l'image  ${DOCKER_TAG_NAME} est un échec!", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
                 }
             }
         }
-
-        stage('Afficher la branche') {
-            steps {
-                script {
-                   // checkout scm
-                    echo "La branche actuelle est : ${name_branche}"
-                }
-            }
-        }
-
+      
         
         stage('Push Image') {
             steps {
