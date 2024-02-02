@@ -81,8 +81,13 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    if (env.BRANCH_NAME == 'main') {
-                        echo "La branche utilisée est : ${env.BRANCH_NAME}"
+                    switch(env.BRANCH_NAME) {
+                        case 'main':
+                            echo "salut:${env.BRANCH_NAME}"   
+                        break
+                        default:
+                            echo "error"
+                        break
                     }
                 }
             }
