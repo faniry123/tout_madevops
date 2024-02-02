@@ -4,15 +4,18 @@ def buildImage() {
             }
         }
 
-
-
 pipeline {
     agent any
     environment {
         //All your env required
         DOCKERHUB_CREDENTIALS = 'id_hub'
         //github
-        github_username = "faniry123" 
+        github_username = "faniry123"
+         //Name of different branch 
+         branch_one = 'main'
+         branch_two = 'front_1'
+         branch_three = 'front_2'
+         branch_for = ''
         //Slack_tokens
         slack_tokens = 'token_slack'
         //Slack_channel
@@ -31,7 +34,7 @@ pipeline {
         image_name = "${tiers}_${client}_${project}_${language}_${env.BRANCH_NAME}"
         //
         DOCKER_TAG_NAME = "${image_name}:${BUILD_NUMBER}"
-        name_branche = "${env.BRANCH_NAME}"
+        name_branche = "${env.BRANCH_NAME}
     }
 
     
@@ -76,13 +79,16 @@ pipeline {
                     //def dockerBuildSuccessMessage = "(${JOB_NAME}) L'image ${DOCKER_TAG_NAME} a été buildée avec succès!"
                     //def dockerBuildFailureMessage = "(${JOB_NAME}) Le Build de l'image ${DOCKER_TAG_NAME} est un échec."
                     switch(env.BRANCH_NAME) {
-                        case 'main':
+                        case '${branch_one}':
                             buildImage()
                         break
-                        case 'front_1':
+                        case '${branch_two}':
                             buildImage()
                         break
-                        case 'front_2':
+                        case '${branch_three':
+                            buildImage()
+                        break
+                        case '${branch_for':
                             buildImage()
                         break
                         default:
