@@ -83,7 +83,7 @@ pipeline {
                 script {
                     switch(env.BRANCH_NAME) {
                         case 'main':
-                            echo "salut:${env.BRANCH_NAME}"   
+                            buildImage()   
                         break
                         default:
                             echo "error"
@@ -91,6 +91,10 @@ pipeline {
                     }
                 }
             }
+        }
+
+        def buildImage(){
+            echo "bonjour il marche bien le branche:${env.BRANCH_NAME} "
         }
 
 
