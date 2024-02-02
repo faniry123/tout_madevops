@@ -107,7 +107,7 @@ pipeline {
                             sendSlackMessage(dockerBuildSuccessMessage, 'good')
                             break
                         default:
-                            echo "error"
+                            sendSlackMessage(dockerBuildFailureMessage, 'danger')
                         break
                     }
                 }
