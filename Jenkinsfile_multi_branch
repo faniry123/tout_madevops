@@ -78,7 +78,13 @@ pipeline {
                     switch(env.BRANCH_NAME) {
                         case 'main':
                             buildImage()
-                            break
+                        break
+                        case 'front_1':
+                            buildImage()
+                        break
+                        case 'front_2':
+                            buildImage()
+                        break
                         default:
                             echo "error"
                         break
