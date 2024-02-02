@@ -1,3 +1,7 @@
+def buildImage() {
+    echo "bonjour il marche bien le branche: ${slack_domain} "
+}
+
 
 
 pipeline {
@@ -28,11 +32,7 @@ pipeline {
         name_branche = "${env.BRANCH_NAME}"
     }
 
-    def buildImage() {
-    echo "bonjour il marche bien le branche: ${env.BRANCHNAME} "
-}
-
-
+    
     stages {
         stage('Commiter') {
             steps {
