@@ -67,22 +67,11 @@ pipeline {
             }
         }
 
-       stage('Récupérer les branches') {
+       stages {
+        stage('Afficher la branche') {
             steps {
                 script {
-                    // Utilisez le nom de votre branche source configurée dans Jenkins
-                    //def branchSourceName = 'Nom_de_votre_branch_source'
-
-                    // Récupérer les informations de la branche source
-                    def branchSource = currentBuild.rawBuild.project.scm.getSources()[0]
-
-                    // Récupérer la liste des branches
-                   // def branches = branchSource.fetchBranches()
-
-                    // Afficher les noms des branches
-                    branches.each { branch ->
-                        echo "Branche trouvée : ${branch.name}"
-                    }
+                    echo "La branche actuelle est : ${env.BRANCH_NAME}"
                 }
             }
         }
