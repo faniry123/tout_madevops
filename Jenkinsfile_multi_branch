@@ -68,28 +68,16 @@ pipeline {
 
        
 
-        stage('Afficher la branche Git') {
+        stage('Afficher la branche Git actuelle') {
             steps {
                 script {
-                   // def currentBranch = env.BRANCH_NAME ?: 'front_1'
-                    //echo "La branche Git actuelle est : ${currentBranch}"
-                  // echo git branch --show-current
-                    def currentBranchGit = sh(script: 'git symbolic-ref --short HEAD', returnStdout: true).trim()
-                    echo "La branche Git actuelle (à partir de Git) est de blabla: ${currentBranchGit}"
+                    def currentBranch = sh(script: 'git symbolic-ref --short HEAD', returnStdout: true).trim()
+                    echo "La branche Git actuelle est : ${currentBranch}"
                 }
             }
         }
 
-
-        stage('Afficher le nom de la branche') {
-            steps {
-                script {
-                    echo "Le nom de la branche est : ${env.BRANCH_NAME}"
-                }
-            }
-        }
-
-
+        
        
 
         stage('Push Image') {
