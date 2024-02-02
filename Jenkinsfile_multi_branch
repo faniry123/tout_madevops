@@ -72,7 +72,7 @@ pipeline {
         stage('Afficher la branche') {
             steps {
                 script {
-                    checkout scm
+                   // checkout scm
                     echo "La branche actuelle est : ${name_branche}"
                 }
             }
