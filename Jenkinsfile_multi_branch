@@ -77,7 +77,7 @@ pipeline {
             steps {
                 script {
                     switch(env.BRANCH_NAME) {
-                        case '${branch_one}':
+                        case "${branch_one}":
                             buildImage()
                         break
                         case '${branch_two}':
