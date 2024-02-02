@@ -34,7 +34,6 @@ pipeline {
         image_name = "${tiers}_${client}_${project}_${language}_${env.BRANCH_NAME}"
         //
         DOCKER_TAG_NAME = "${image_name}:${BUILD_NUMBER}"
-        name_branche = "${env.BRANCH_NAME}
     }
 
     
