@@ -66,25 +66,26 @@ pipeline {
             }
         }
 
-       
-
-        stage('Afficher la branche Git actuelle') {
+       stage('Récupérer les branches') {
             steps {
                 script {
-                    def currentBranch = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStatus: true).trim()
-                    
-                    if (currentBranch.isEmpty()) {
-                        // Si la branche est vide, cela signifie que HEAD est détaché
-                        def detachedCommit = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
-                        echo "Vous êtes dans un état de référence détachée (detached HEAD) pour le commit ${detachedCommit}"
-                    } else {
-                        echo "La branche Git actuelle est : ${currentBranch}"
+                    // Utilisez le nom de votre branche source configurée dans Jenkins
+                    //def branchSourceName = 'Nom_de_votre_branch_source'
+
+                    // Récupérer les informations de la branche source
+                    def branchSource = currentBuild.rawBuild.project.scm.getSources()[0]
+
+                    // Récupérer la liste des branches
+                   // def branches = branchSource.fetchBranches()
+
+                    // Afficher les noms des branches
+                    branches.each { branch ->
+                        echo "Branche trouvée : ${branch.name}"
                     }
                 }
             }
-        }
-       
 
+        
         stage('Push Image') {
             steps {
                 script {
