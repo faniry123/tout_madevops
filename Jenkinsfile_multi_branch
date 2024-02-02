@@ -4,6 +4,16 @@ def buildImage() {
             }
         }
 
+def sendSlackMessage(message, color) {
+            post {
+                success {
+                    slackSend channel: "${slackSend_channel}", message: message, teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: color, iconEmoji: ':thumbsup:'
+                }
+                failure {
+                    slackSend channel: "${slackSend_channel}", message: message, teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
+                }
+            }
+        }
 
 pipeline {
     agent any
@@ -88,10 +98,13 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
+                def dockerBuildSuccessMessage = "(${JOB_NAME}) L'image ${DOCKER_TAG_NAME} a été buildée avec succès!"
+                def dockerBuildFailureMessage = "(${JOB_NAME}) Le Build de l'image ${DOCKER_TAG_NAME} est un échec."
                 script {
                     switch(env.BRANCH_NAME) {
                         case 'main':
                             buildImage()
+                            sendSlackMessage(dockerBuildSuccessMessage, 'good')
                             break
                         default:
                             echo "error"
