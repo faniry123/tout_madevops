@@ -1,32 +1,5 @@
 def buildImage() {
-    echo "bonjour il marche bien le branche"
-}
-
-pipeline {
-    agent any
-
-    stages {
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    switch(env.BRANCH_NAME) {
-                        case 'main':
-                            buildImage()
-                            break
-                        default:
-                            echo "error"
-                            break
-                    }
-                }
-            }
-        }
-    }
-
-    post {
-        always {
-            // Cleanup steps, if any
-        }
-    }
+    echo "bonjour il marche bien le branche: ${env.BRANCHNAME} "
 }
 
 pipeline {
