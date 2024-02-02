@@ -66,6 +66,19 @@ pipeline {
             }
         }
 
+        stage('Checkout de la branche Git') {
+            steps {
+                script {
+                    // Utilisation de la commande checkout pour passer à une branche spécifique
+                    checkout([$class: 'GitSCM', branches: [[name: 'main']]])
+
+                    // Vous pouvez également utiliser BRANCH_NAME si elle est définie
+                    def currentBranch = env.BRANCH_NAME ?: 'main'
+                    echo "Vous êtes maintenant sur la branche : ${currentBranch}"
+                }
+            }
+        }
+
         stage('Afficher la branche Git') {
             steps {
                 script {
