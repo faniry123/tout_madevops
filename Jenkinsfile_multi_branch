@@ -98,9 +98,9 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                def dockerBuildSuccessMessage = "(${JOB_NAME}) L'image ${DOCKER_TAG_NAME} a été buildée avec succès!"
-                def dockerBuildFailureMessage = "(${JOB_NAME}) Le Build de l'image ${DOCKER_TAG_NAME} est un échec."
                 script {
+                    def dockerBuildSuccessMessage = "(${JOB_NAME}) L'image ${DOCKER_TAG_NAME} a été buildée avec succès!"
+                    def dockerBuildFailureMessage = "(${JOB_NAME}) Le Build de l'image ${DOCKER_TAG_NAME} est un échec."
                     switch(env.BRANCH_NAME) {
                         case 'main':
                             buildImage()
