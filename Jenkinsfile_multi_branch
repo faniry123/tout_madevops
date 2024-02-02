@@ -67,7 +67,6 @@ pipeline {
             }
         }
 
-       stages {
         stage('Afficher la branche') {
             steps {
                 script {
