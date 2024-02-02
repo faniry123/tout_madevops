@@ -13,7 +13,7 @@ pipeline {
         //github
         github_username = "faniry123"
          //Name of different branch 
-         branch_one = 'main'
+         branch_one = "main"
          branch_two = 'front_1'
          branch_three = 'front_2'
          branch_for = ''
@@ -76,7 +76,7 @@ pipeline {
             steps {
                 script {
                     switch(env.BRANCH_NAME) {
-                        case 'main':
+                        case '${branch_one}':
                             buildImage()
                         break
                         case '${branch_two}':
