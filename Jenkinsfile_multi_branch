@@ -53,7 +53,6 @@ pipeline {
         }
         stage('Login to Docker Hub') {
             steps {
-                    echo "test blabla branche: ${name_branche}"
                 script {
                     // Log in to Docker Hub using credentials
                     withCredentials([usernamePassword(credentialsId: "${DOCKERHUB_CREDENTIALS}", usernameVariable: 'DOCKERHUB_CREDENTIALS_USR', passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW')]) {
