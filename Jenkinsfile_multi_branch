@@ -1,6 +1,4 @@
-def buildImage() {
-    echo "bonjour il marche bien le branche: ${env.BRANCHNAME} "
-}
+
 
 pipeline {
     agent any
@@ -29,6 +27,12 @@ pipeline {
         DOCKER_TAG_NAME = "${image_name}:${BUILD_NUMBER}"
         name_branche = "${env.BRANCH_NAME}"
     }
+
+    def buildImage() {
+    echo "bonjour il marche bien le branche: ${env.BRANCHNAME} "
+}
+
+
     stages {
         stage('Commiter') {
             steps {
