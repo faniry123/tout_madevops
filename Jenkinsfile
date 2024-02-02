@@ -1,181 +1,161 @@
+def buildImage() {
+            script {
+                sh "docker build --build-arg BUILD_NUMBER=${BUILD_NUMBER} -t ${github_username}/${image_name}:build_${BUILD_NUMBER} -t ${github_username}/${image_name} --no-cache ."
+            }
+        }
+
+
 pipeline {
     agent any
-
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('id_hub')
-        DOCKER_IMAGE_NAME = 'faniry123/ma_front_html'
-        DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
-        OLD_DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER - 1}"
-
-        // Slack tokens
-        SLACK_CHANNEL = '#slacknotification'
-        SLACK_CREDENTIALS_ID = 'token_slack'
+        //All your env required
+        DOCKERHUB_CREDENTIALS = 'id_hub'
+        //github
+        github_username = "faniry123"
+         //Name of different branch 
+         branch_one = "main"
+         branch_two = "front_1"
+         branch_three = "front_2"
+         branch_for = ""
+        //Slack_tokens
+        slack_tokens = 'token_slack'
+        //Slack_channel
+        slackSend_channel = '#slacknotification'
+        //teamDomain_Slack
+        slack_domain = 'fanirysiege'
+        //front or Back or API
+        tiers = 'front'
+        //Client Name
+        client = 'ostie'
+        //project
+        project = 'test_html'
+        // Language with env
+        language = 'html'
+        // Image name
+        image_name = "${tiers}_${client}_${project}_${language}_${env.BRANCH_NAME}"
+        //
+        DOCKER_TAG_NAME = "${image_name}:${BUILD_NUMBER}"
     }
 
+    
     stages {
-        stage('Test HTML') {
-            steps {
-                echo 'Running HTML tests...'
-                // Add your HTML test commands here
-            }
-            post {
-                success {
-                    script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
-                            slackSend(
-                                color: '#36a64f',
-                                message: "TEST réussi!",
-                                channel: "${SLACK_CHANNEL}",
-                                teamDomain: 'fanirysiege',
-                                tokenCredentialId: "${SLACK_CREDENTIALS_ID}",
-                                iconEmoji: ':thumbsup:'
-                            )
-                        }
-                    }
-                }
-                failure {
-                    script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
-                            slackSend(
-                                color: '#ff0000',
-                                message: "Échec du TEST!",
-                                channel: "${SLACK_CHANNEL}",
-                                teamDomain: 'fanirysiege',
-                                tokenCredentialId: "${SLACK_CREDENTIALS_ID}",
-                                iconEmoji: ':thumbsdown:'
-                            )
-                        }
-                    }
-                }
-            }
-        }
-
-        stage('Build') {
+        stage('Commiter') {
             steps {
                 script {
-                    docker.build("${DOCKER_IMAGE_TAG}", '.')
+                    def COMMITTER_EMAIL
+                    if (isUnix()) {
+                        COMMITTER_EMAIL = sh(script: "git --no-pager show -s --format='%ae'", returnStdout: true).trim()
+                    } else {
+                        COMMITTER_EMAIL = bat(script: "git --no-pager show -s --format=%%ae", returnStdout: true).split('\r\n')[2].trim()
+                    }
+                    slackSend channel: "${slackSend_channel}", failOnError: true, message: "(${JOB_NAME}) ${COMMITTER_EMAIL} a initilisé le build numéro ${BUILD_DISPLAY_NAME}", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
                 }
             }
-            post {
-                success {
-                    script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
-                            slackSend(
-                                color: '#36a64f',
-                                message: "BUILD réussi!",
-                                channel: "${SLACK_CHANNEL}",
-                                teamDomain: 'fanirysiege',
-                                tokenCredentialId: "${SLACK_CREDENTIALS_ID}",
-                                iconEmoji: ':thumbsup:'
-                            )
-                        }
-                    }
-                }
-                failure {
-                    script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
-                            slackSend(
-                                color: '#ff0000',
-                                message: "Échec du BUILD!",
-                                channel: "${SLACK_CHANNEL}",
-                                teamDomain: 'fanirysiege',
-                                tokenCredentialId: "${SLACK_CREDENTIALS_ID}",
-                                iconEmoji: ':thumbsdown:'
-                            )
-                        }
-                    }
-                }
-            }
-            
         }
-
         stage('Login to Docker Hub') {
             steps {
+                        echo "${branch_one}"
                 script {
                     // Log in to Docker Hub using credentials
-                    withCredentials([usernamePassword(credentialsId: 'id_hub', usernameVariable: 'DOCKERHUB_CREDENTIALS_USR', passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW')]) {
-                        sh "echo \$DOCKERHUB_CREDENTIALS_PSW | docker login -u \$DOCKERHUB_CREDENTIALS_USR --password-stdin"
+                    withCredentials([usernamePassword(credentialsId: "${DOCKERHUB_CREDENTIALS}", usernameVariable: 'DOCKERHUB_CREDENTIALS_USR', passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW')]) {
+                        sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
                     }
                 }
             }
-
-             post {
+            post('Login to Docker Hub') {
                 success {
-                    script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
-                            slackSend(
-                                color: '#36a64f',
-                                message: "LOGIN TO DOCKER réussi!",
-                                channel: "${SLACK_CHANNEL}",
-                                teamDomain: 'fanirysiege',
-                                tokenCredentialId: "${SLACK_CREDENTIALS_ID}",
-                                iconEmoji: ':thumbsup:'
-                            )
-                        }
-                    }
+                    slackSend channel: "${slackSend_channel}", message: "Login to DockerHub  succeeded", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
                 }
                 failure {
-                    script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
-                            slackSend(
-                                color: '#ff0000',
-                                message: "Échec du LOGIN TO DOCKER!",
-                                channel: "${SLACK_CHANNEL}",
-                                teamDomain: 'fanirysiege',
-                                tokenCredentialId: "${SLACK_CREDENTIALS_ID}",
-                                iconEmoji: ':thumbsdown:'
-                            )
-                        }
-                    }
+                    slackSend channel: "${slackSend_channel}", message: "Login to DockerHub  failed", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
                 }
             }
         }
 
-        stage('Push to Docker Hub') {
+
+        stage('Build Docker Image') {
             steps {
                 script {
-                    sh "docker push ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
+                    switch(env.BRANCH_NAME) {
+                        case "${branch_one}":
+                            buildImage()
+                        break
+                        case "${branch_two}":
+                            buildImage()
+                        break
+                        case "${branch_three}":
+                            buildImage()
+                        break
+                        case "${branch_for}":
+                            buildImage()
+                        break
+                        default:
+                            echo "error"
+                        break
+                    }
                 }
             }
-
-            post {
+            post('Build Docker Image') {
                 success {
-                    script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
-                            slackSend(
-                                color: '#36a64f',
-                                message: "Push to Docker Hub réussi!",
-                                channel: "${SLACK_CHANNEL}",
-                                teamDomain: 'fanirysiege',
-                                tokenCredentialId: "${SLACK_CREDENTIALS_ID}",
-                                iconEmoji: ':thumbsup:'
-                            )
-                        }
-                    }
+                    slackSend channel: "${slackSend_channel}", message: "(${JOB_NAME}) L'image ${DOCKER_TAG_NAME} a été buildé avec réussite!", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
                 }
                 failure {
-                    script {
-                        withCredentials([string(credentialsId: "${SLACK_CREDENTIALS_ID}", variable: 'SLACK_TOKEN')]) {
-                            slackSend(
-                                color: '#ff0000',
-                                message: "Échec du Push to Docker Hub!",
-                                channel: "${SLACK_CHANNEL}",
-                                teamDomain: 'fanirysiege',
-                                tokenCredentialId: "${SLACK_CREDENTIALS_ID}",
-                                iconEmoji: ':thumbsdown:'
-                            )
-                        }
+                    slackSend channel: "${slackSend_channel}", message: "(${JOB_NAME}) Le Build de l'image  ${DOCKER_TAG_NAME} est un échec!", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
+                }
+            }
+        }
+      
+        
+        stage('Push Image') {
+            steps {
+                script {
+                    // Push the Docker image with the specific version
+                    sh "docker push ${github_username}/${image_name}:build_${BUILD_NUMBER}"
+                    sh "docker push ${github_username}/${image_name}"
+                    
+                }
+            }
+            post {
+                success {
+                    slackSend channel: "${slackSend_channel}", message: "(${env.JOB_NAME}) l'image  ${DOCKER_TAG_NAME}  est disponible dans Dockehub", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
+                }
+                failure {
+                    slackSend channel: "${slackSend_channel}", message: "(${env.JOB_NAME}) Le push de l'image  ${DOCKER_TAG_NAME} a échoué !", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
+                    retry(1) {
+                        sh "docker push ${github_username}/${image_name}:build_${BUILD_NUMBER}"
+                        sh "docker push ${github_username}/${image_name}"
+                        
                     }
                 }
             }
         }
-    }
 
-    post {
-        
-        always {
-            sh 'docker logout'
+        stage('Cleaning Image') {
+            steps {
+                script {
+                    // Cleaning the Docker image with the specific version
+                    echo "${image_name}"
+                    sh "docker  rmi -f ${github_username}/${image_name}:build_${BUILD_NUMBER}" 
+                    sh "docker  rmi -f ${github_username}/${image_name}"  
+                }
+            } 
+            post {
+                success {
+                    slackSend channel: "${slackSend_channel}", message: "(${env.JOB_NAME}) La suppression d'image ${DOCKER_TAG_NAME}  est reussi", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
+                }
+                failure {
+                    slackSend channel: "${slackSend_channel}", message: "(${env.JOB_NAME}) Le suppression d'image ${DOCKER_TAG_NAME} a échoué!", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
+                    }
+            }
         }
     }
-
+    post {
+        always {
+            // Log out of Docker Hub
+            sh 'docker logout'
+            sh "docker  rmi -f ${github_username}/${image_name}:build_${BUILD_NUMBER}"
+            sh 'docker image prune -f'
+            
+        }
+    }
 }
