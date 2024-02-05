@@ -78,7 +78,7 @@ pipeline {
                     def branches = sh(script: 'git branch --format="%(refname:short)"', returnStdout: true).trim()
                     echo "Branches Git : ${branches}"
 
-                    branches.split('\n').each { branch ->
+                    branches.each { branch ->
                         if (branch) {
                             buildImage(branch)
                         } else {
