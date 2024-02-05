@@ -75,7 +75,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                   def branches = sh(script: 'git ls-remote --heads origin', returnStdout: true).trim()
+                   def branches = env.BRANCH_NAME
                     echo "Branches Git : ${branches}"
 
                     branches.each { branch ->
