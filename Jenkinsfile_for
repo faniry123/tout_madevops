@@ -72,24 +72,17 @@ pipeline {
         }
 
 
-        stage('Retrieve Branch Names') {
+        stage('Get Branches') {
             steps {
                 script {
-                    // Récupérer les informations sur le multibranch pipeline
-                    def branchNames = []
-                    def pipelineBranches = checkout(scm)
+                    def branches = sh(script: 'git branch --format="%(refname:short)"', returnStdout: true).trim()
+                    echo "Branches Git : ${branches}"
 
-                    // Itérer sur chaque branche et extraire le nom
-                    pipelineBranches.each { branch ->
-                        def branchName = branch.name
-                        branchNames.add(branchName)
-                    }
-
-                    // Afficher le tableau des noms de branches
-                    echo "Branch Names: ${branchNames}"
+                    // Ajoutez d'autres étapes ou traitements en fonction des branches récupérées
                 }
             }
         }
+
 
            
         
