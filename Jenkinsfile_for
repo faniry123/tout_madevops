@@ -76,7 +76,7 @@ pipeline {
             steps {
                 script {
                     def localBranches = sh(script: 'git branch', returnStdout: true).trim()
-                    echo "Branches locales : ${localBranches}"
+                    echo "Branches locales : "${localBranches}""
                     // Ajoutez d'autres étapes ou traitements en fonction des branches récupérées
                 }
             }
