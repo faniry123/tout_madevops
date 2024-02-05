@@ -5,7 +5,6 @@ def buildImage(branch) {
         }
 
 
-
 pipeline {
     agent any
     environment {
@@ -36,7 +35,6 @@ pipeline {
         image_name = "${tiers}_${client}_${project}_${language}"
         //
         DOCKER_TAG_NAME = "${image_name}:${BUILD_NUMBER}"
-        def branches = helper.getBranchName("${env.GIT_BRANCH}")
     }
 
     
@@ -77,10 +75,10 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                   //def branches = env.BRANCH_NAME
+                    def branches = sh(script: 'git branch --format="%(refname:short)"', returnStdout: true).trim()
                     echo "Branches Git : ${branches}"
 
-                    branches.each { branch ->
+                    branches.split('\n').each { branch ->
                         if (branch) {
                             buildImage(branch)
                         } else {
@@ -89,7 +87,8 @@ pipeline {
                     }
                 }
             }
-        
+        }
+
             post('Build Docker Image') {
                 success {
                     slackSend channel: "${slackSend_channel}", message: "(${JOB_NAME}) L'image ${DOCKER_TAG_NAME} a été buildé avec réussite!", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
@@ -98,7 +97,7 @@ pipeline {
                     slackSend channel: "${slackSend_channel}", message: "(${JOB_NAME}) Le Build de l'image  ${DOCKER_TAG_NAME} est un échec!", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
                 }
             }
-       }
+        }
       
         
         stage('Push Image') {
