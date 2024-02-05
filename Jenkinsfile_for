@@ -1,4 +1,4 @@
-def buildImage(env.BRANCH_NAME) {
+def buildImage(BRANCH_NAME) {
             script {
                 sh "docker build --build-arg BUILD_NUMBER=${BUILD_NUMBER} -t ${github_username}/${image_name}:build_${BUILD_NUMBER} -t ${github_username}/${image_name}_${BRANCH_NAME} --no-cache ."
             }
