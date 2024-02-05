@@ -4,12 +4,6 @@ def buildImage(branch) {
             }
         }
 
-def recuperer(branch) {
-            script {
-                        branches = sh(script: 'git branch --format="%(refname:short)"', returnStdout: true).trim()
-                        echo "Branches Git : ${branches}"
-            }
-        }
 
 
 pipeline {
