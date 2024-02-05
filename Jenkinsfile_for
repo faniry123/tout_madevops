@@ -72,18 +72,24 @@ pipeline {
         }
 
 
-        stage('Build Docker Image') {
+        stage('Retrieve Branch Names') {
             steps {
                 script {
-                    def currentBranch = sh(script: 'git describe --all', returnStdout: true).trim()
-                    
-                    // Afficher la branche actuelle
-                    echo "Branche Git actuelle : ${currentBranch}"
-      
+                    // Récupérer les informations sur le multibranch pipeline
+                    def branchNames = []
+                    def pipelineBranches = checkout(scm)
 
-                    
+                    // Itérer sur chaque branche et extraire le nom
+                    pipelineBranches.each { branch ->
+                        def branchName = branch.name
+                        branchNames.add(branchName)
+                    }
+
+                    // Afficher le tableau des noms de branches
+                    echo "Branch Names: ${branchNames}"
                 }
             }
+        }
 
             post('Build Docker Image') {
                 success {
