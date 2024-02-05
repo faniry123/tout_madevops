@@ -1,6 +1,6 @@
-def buildImage(BRANCH_NAME) {
+def buildImage(branch) {
             script {
-                sh "docker build --build-arg BUILD_NUMBER=${BUILD_NUMBER} -t ${github_username}/${image_name}:build_${BUILD_NUMBER} -t ${github_username}/${image_name}_${BRANCH_NAME} --no-cache ."
+                sh "docker build --build-arg BUILD_NUMBER=${BUILD_NUMBER} -t ${github_username}/${image_name}:build_${BUILD_NUMBER} -t ${github_username}/${image_name}_${branch} --no-cache ."
             }
         }
 
@@ -72,27 +72,24 @@ pipeline {
         }
 
 
-        
-
         stage('Build Docker Image') {
             steps {
                 script {
                     def branches = sh(script: 'git branch --format="%(refname:short)"', returnStdout: true).trim()
-                    echo "Branches Git : ${branches}"    
-                 for "${BRANCH_NAME}" in branches: 
-                    switch(BRANCH_NAME) {
-                        buildImage(env.BRANCH_NAME)
-                        default:
-                            echo "error"
-                        break
+                    echo "Branches Git : ${branches}"
+
+                    for (branch in branches) {
+                        switch (branch) {
+                                buildImage(branch)
+                                break
+                            default:
+                                echo "error"
+                                break
+                        }
                     }
                 }
             }
-
-        
-
-
-
+        }
 
             post('Build Docker Image') {
                 success {
