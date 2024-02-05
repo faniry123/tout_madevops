@@ -80,7 +80,7 @@ pipeline {
                     def branches = sh(script: 'git branch --format="%(refname:short)"', returnStdout: true).trim()
                     echo "Branches Git : ${branches}"    
                  for ${env.BRANCH_NAME} in branches: 
-                    switch(env.BRANCH_NAME) {
+                    switch(BRANCH_NAME) {
                         buildImage(env.BRANCH_NAME)
                         default:
                             echo "error"
