@@ -4,6 +4,13 @@ def buildImage(branch) {
             }
         }
 
+def recuperer(branch) {
+            script {
+                        branches = sh(script: 'git branch --format="%(refname:short)"', returnStdout: true).trim()
+                        echo "Branches Git : ${branches}"
+            }
+        }
+
 
 pipeline {
     agent any
@@ -75,8 +82,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                   def branches = env.BRANCH_NAME
-                    echo "Branches Git : ${branches}"
+                   //def branches = env.BRANCH_NAME
+                    //echo "Branches Git : ${branches}"
 
                     branches.each { branch ->
                         if (branch) {
