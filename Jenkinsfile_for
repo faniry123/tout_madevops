@@ -75,8 +75,11 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def branches = sh(script: 'git branch --format="%(refname:short)"', returnStdout: true).trim()
-                    echo "Branches Git : ${branches}"
+                    def currentBranch = sh(script: 'git describe --all', returnStdout: true).trim()
+                    
+                    // Afficher la branche actuelle
+                    echo "Branche Git actuelle : ${currentBranch}"
+      
 
                     
                 }
