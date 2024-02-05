@@ -90,14 +90,6 @@ pipeline {
                 }
             }
         }
-
-        
-
-        
-
-
-
-
             post('Build Docker Image') {
                 success {
                     slackSend channel: "${slackSend_channel}", message: "(${JOB_NAME}) L'image ${DOCKER_TAG_NAME} a été buildé avec réussite!", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
