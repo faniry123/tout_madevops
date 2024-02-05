@@ -77,7 +77,11 @@ pipeline {
                 script {
                     def branches = sh(script: 'git branch --format="%(refname:short)"', returnStdout: true).trim()
                     echo "Branches Git : ${branches}"
-
+                    def branchesList = branches.split()
+for (branch in branchesList) {
+    echo "Branche Git : ${branch}"
+    // Ajoutez ici les étapes spécifiques pour chaque branche
+}
                     // Ajoutez d'autres étapes ou traitements en fonction des branches récupérées
                 }
             }
