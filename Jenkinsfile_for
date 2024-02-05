@@ -36,7 +36,7 @@ pipeline {
         image_name = "${tiers}_${client}_${project}_${language}"
         //
         DOCKER_TAG_NAME = "${image_name}:${BUILD_NUMBER}"
-        branches = helper.getBranchName("${env.GIT_BRANCH}")
+        def branches = helper.getBranchName("${env.GIT_BRANCH}")
     }
 
     
