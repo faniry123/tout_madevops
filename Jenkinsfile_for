@@ -75,13 +75,8 @@ pipeline {
         stage('Get Branches') {
             steps {
                 script {
-                    def branches = sh(script: 'git branch --format="%(refname:short)"', returnStdout: true).trim()
-                    echo "Branches Git : ${branches}"
-                    def branchesList = branches.split()
-for (branch in branchesList) {
-    echo "Branche Git : ${branch}"
-    // Ajoutez ici les étapes spécifiques pour chaque branche
-}
+                    def remoteBranches = sh(script: 'git ls-remote --heads origin', returnStdout: true).trim()
+                    echo "Branches distantes : ${remoteBranches}"
                     // Ajoutez d'autres étapes ou traitements en fonction des branches récupérées
                 }
             }
