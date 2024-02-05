@@ -82,51 +82,7 @@ pipeline {
             }
         }
 
-
-           
-        
-        stage('Push Image') {
-            steps {
-                script {
-                    // Push the Docker image with the specific version
-                    sh "docker push ${github_username}/${image_name}:build_${BUILD_NUMBER}"
-                    sh "docker push ${github_username}/${image_name}"
-                    
-                }
-            }
-            post {
-                success {
-                    slackSend channel: "${slackSend_channel}", message: "(${env.JOB_NAME}) l'image  ${DOCKER_TAG_NAME}  est disponible dans Dockehub", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
-                }
-                failure {
-                    slackSend channel: "${slackSend_channel}", message: "(${env.JOB_NAME}) Le push de l'image  ${DOCKER_TAG_NAME} a échoué !", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
-                    retry(1) {
-                        sh "docker push ${github_username}/${image_name}:build_${BUILD_NUMBER}"
-                        sh "docker push ${github_username}/${image_name}"
-                        
-                    }
-                }
-            }
-        }
-
-        stage('Cleaning Image') {
-            steps {
-                script {
-                    // Cleaning the Docker image with the specific version
-                    echo "${image_name}"
-                    sh "docker  rmi -f ${github_username}/${image_name}:build_${BUILD_NUMBER}" 
-                    sh "docker  rmi -f ${github_username}/${image_name}"  
-                }
-            } 
-            post {
-                success {
-                    slackSend channel: "${slackSend_channel}", message: "(${env.JOB_NAME}) La suppression d'image ${DOCKER_TAG_NAME}  est reussi", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
-                }
-                failure {
-                    slackSend channel: "${slackSend_channel}", message: "(${env.JOB_NAME}) Le suppression d'image ${DOCKER_TAG_NAME} a échoué!", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'danger', iconEmoji: ':thumbsdown:'
-                    }
-            }
-        }
+  
     }
     post {
         always {
