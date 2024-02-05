@@ -42,6 +42,7 @@ pipeline {
         image_name = "${tiers}_${client}_${project}_${language}"
         //
         DOCKER_TAG_NAME = "${image_name}:${BUILD_NUMBER}"
+        branches = helper.getBranchName("${env.GIT_BRANCH}")
     }
 
     
@@ -83,7 +84,7 @@ pipeline {
             steps {
                 script {
                    //def branches = env.BRANCH_NAME
-                    //echo "Branches Git : ${branches}"
+                    echo "Branches Git : ${branches}"
 
                     branches.each { branch ->
                         if (branch) {
