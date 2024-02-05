@@ -1,6 +1,6 @@
-def buildImage() {
+def buildImage(env.BRANCH_NAME) {
             script {
-                sh "docker build --build-arg BUILD_NUMBER=${BUILD_NUMBER} -t ${github_username}/${image_name}:build_${BUILD_NUMBER} -t ${github_username}/${image_name} --no-cache ."
+                sh "docker build --build-arg BUILD_NUMBER=${BUILD_NUMBER} -t ${github_username}/${image_name}:build_${BUILD_NUMBER} -t ${github_username}/${image_name}_${BRANCH_NAME} --no-cache ."
             }
         }
 
@@ -32,7 +32,7 @@ pipeline {
         // Language with env
         language = 'html'
         // Image name
-        image_name = "${tiers}_${client}_${project}_${language}_${env.BRANCH_NAME}"
+        image_name = "${tiers}_${client}_${project}_${language}"
         //
         DOCKER_TAG_NAME = "${image_name}:${BUILD_NUMBER}"
     }
@@ -72,28 +72,28 @@ pipeline {
         }
 
 
+        
+
         stage('Build Docker Image') {
             steps {
                 script {
+                    def branches = sh(script: 'git branch --format="%(refname:short)"', returnStdout: true).trim()
+                    echo "Branches Git : ${branches}"    
+                 for ${env.BRANCH_NAME} in branches: 
                     switch(env.BRANCH_NAME) {
-                        case "${branch_one}":
-                            buildImage()
-                        break
-                        case "${branch_two}":
-                            buildImage()
-                        break
-                        case "${branch_three}":
-                            buildImage()
-                        break
-                        case "${branch_for}":
-                            buildImage()
-                        break
+                        buildImage(env.BRANCH_NAME)
                         default:
                             echo "error"
                         break
                     }
                 }
             }
+
+        
+
+
+
+
             post('Build Docker Image') {
                 success {
                     slackSend channel: "${slackSend_channel}", message: "(${JOB_NAME}) L'image ${DOCKER_TAG_NAME} a été buildé avec réussite!", teamDomain: "${slack_domain}", tokenCredentialId: "${slack_tokens}", color: 'good', iconEmoji: ':thumbsup:'
