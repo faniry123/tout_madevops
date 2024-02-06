@@ -75,9 +75,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                script {
-                        def localBranches = sh(script: 'git branch', returnStdout: true).trim()
-                       echo "Nom de branche locale : ${localBranches}"
+                script {     
                     switch(env.BRANCH_NAME) {
                         case "${branch_one}":
                             buildImage()
