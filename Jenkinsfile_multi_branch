@@ -75,8 +75,6 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                        def branches = sh(script: 'git branch --list', returnStdout: true).trim()
-                        echo "Branches Git : ${branches}"
                     switch(env.BRANCH_NAME) {
                         case "${branch_one}":
                             buildImage()
