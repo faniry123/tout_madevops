@@ -1,0 +1,15 @@
+version: '3.3'
+services:
+  phpmyadmin-server:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin-server
+    restart: always
+    ports:
+      - 8181:80
+    environment:
+      - PMA_ARBITRARY=1
+      - UPLOAD_LIMIT=900M
+      - MEMORY_LIMIT+2024M
+    network_mode: bridge
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
