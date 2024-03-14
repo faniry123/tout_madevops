@@ -1,0 +1,32 @@
+#1: Install Helm 3 on Kubernetes Cluster
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+helm version
+
+#Output:
+version.BuildInfo{Version:"v3.5.3", GitCommit:"041ce5a2c17a58be0fcd5f5e16fb3e7e95fea622", GitTreeState:"dirty", GoVersion:"go1.15.8"}
+
+#2: Install Traefik Ingress Controller on Kubernetes using Helm 3
+
+helm repo add traefik https://helm.traefik.io/traefik
+helm repo update
+helm install traefik traefik/traefik
+kubectl create ns traefik-v2
+helm install --namespace=traefik-v2 \
+traefik traefik/traefik
+kubectl get svc
+
+#3. Creating Deployment and service for nginx app and NodeJs app
+
+#3.1. Creating Deployment and service for Nginx app
+sudo nano nginx-deploy.yml
+sudo nano nginx-svc.yml
+kubectl create -f nginx-deploy.yml
+kubectl create -f nginx-svc.yml
+kubectl create -f nodejs-deploy.yml
+kubectl create -f nodejs-svc.yml
+
+nodejsapp.fosstechnix.info
+kubectl port-forward $(kubectl get pods --selector "app.kubernetes.io/name=traefik" --output=name) --address 0.0.0.0 9000:9000
+http://65.2.81.244:9000/dashboard/#/
