@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mon-html
+  labels:
+    app: mon-html
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mon-html
+  template:
+    metadata:
+      labels:
+        app: mon-html
+    spec:
+      imagePullSecrets:
+      - name: my-registry-key
+      containers:
+      - name: mon-html
+        image: faniry123/front_ostie_test_html_html_main:latest
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mon-html-service
+  annotations:
+    tailscale.com/expose: "true"
+spec:
+  selector:
+    app: mon-html
+  ports:
+    - port: 80
