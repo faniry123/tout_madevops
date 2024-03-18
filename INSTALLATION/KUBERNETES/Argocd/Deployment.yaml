@@ -18,7 +18,7 @@ spec:
       - name: my-registry-key
       containers:
       - name: mon-html
-        image: faniry123/front_ostie_test_html_html_main:5
+        image: faniry123/front_ostie_test_html_html_main:latest
         imagePullPolicy: Always
         ports:
           - containerPort: 80
