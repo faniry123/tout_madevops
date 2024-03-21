@@ -26,3 +26,7 @@ Run one pod in the same namespace to capture the logs on cluster
 
 kubectl run nginx --image=nginx --restart=Never
 kubectl run mycurlpod --image=curlimages/curl -i --tty -- sh
+
+
+kubectl port-forward svc/elasticsearch 9200
+kubectl port-forward svc/kibana 8080
