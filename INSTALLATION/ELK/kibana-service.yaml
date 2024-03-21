@@ -3,6 +3,8 @@ kind: Service
 metadata:
   name: kibana-logging
   namespace: efklog
+  annotations:
+    tailscale.com/expose: "true"
   labels:
     k8s-app: kibana-logging
     kubernetes.io/cluster-service: "true"
