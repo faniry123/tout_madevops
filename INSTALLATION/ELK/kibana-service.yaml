@@ -12,9 +12,9 @@ metadata:
     kubernetes.io/name: "Kibana"
 spec:
   ports:
-  - port: 8089
+  - port: 5601
     protocol: TCP
-    targetPort: 5601
+    targetPort: ui
   selector:
     k8s-app: kibana-logging
   #type: LoadBalancer
