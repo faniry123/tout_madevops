@@ -11,10 +11,14 @@ metadata:
 spec:
   selector: 
     k8s-app: kibana-logging
-  type: NodePort  
+  #type: NodePort  
   ports:
-    - port: 5601
-      protocol: TCP
-      targetPort: 5601 
-      nodePort: 30000
+        - containerPort: 5601
+          name: ui
+          protocol: TCP
+  #ports:
+   # - port: 5601
+    #  protocol: TCP
+     # targetPort: 5601 
+     # nodePort: 30000
 
