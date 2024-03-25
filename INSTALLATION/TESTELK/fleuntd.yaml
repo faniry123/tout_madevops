@@ -13,7 +13,7 @@ data:
 
     <match **>
       @type elasticsearch
-      hosts elasticsearch:9200
+      hosts elasticsearch.logging.svc.cluster.local:9200
       logstash_format true
       buffer_chunk_limit 2M
       buffer_queue_limit 8
@@ -46,14 +46,14 @@ spec:
       - name: fluentd
         image: fluent/fluentd-kubernetes-daemonset:v1.12-debian-elasticsearch7-1.0
         env:
-          - name: FLUENT_ELASTICSEARCH_HOST
-            value: "elasticsearch.logging.svc.cluster.local"
-          - name: FLUENT_ELASTICSEARCH_PORT
-            value: "9200"
+        - name: FLUENT_ELASTICSEARCH_HOST
+          value: "elasticsearch.logging.svc.cluster.local"
+        - name: FLUENT_ELASTICSEARCH_PORT
+          value: "9200"
         volumeMounts:
-          - name: config-volume
-            mountPath: /fluentd/etc
-      volumes:
         - name: config-volume
-          configMap:
-            name: fluentd-config
+          mountPath: /fluentd/etc
+      volumes:
+      - name: config-volume
+        configMap:
+          name: fluentd-config
