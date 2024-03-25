@@ -38,6 +38,6 @@ spec:
     app: kibana
   type: NodePort  
   ports:
-    - port: 5601
+    - port: 8080
       targetPort: 5601 
       nodePort: 30000
