@@ -44,7 +44,7 @@ spec:
         effect: NoSchedule
       containers:
       - name: fluentd
-        image: fluent/fluentd-kubernetes-daemonset:latest
+        image: quay.io/fluent/fluentd-kubernetes-daemonset
         env:
         - name: FLUENT_ELASTICSEARCH_HOST
           value: "elasticsearch.logging.svc.cluster.local"
