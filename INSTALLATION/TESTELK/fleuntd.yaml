@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-config
+  namespace: logging
+data:
+  fluent.conf: |
+    <source>
+      @type forward
+      port 24224
+      bind 0.0.0.0
+    </source>
+
+    <match **>
+      @type elasticsearch
+      hosts elasticsearch:9200
+      logstash_format true
+      buffer_chunk_limit 2M
+      buffer_queue_limit 8
+      flush_interval 5s
+      max_retry_wait 30
+      disable_retry_limit
+      num_threads 2
+    </match>
+
+---
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd
+  namespace: logging
+spec:
+  selector:
+    matchLabels:
+      app: fluentd
+  template:
+    metadata:
+      labels:
+        app: fluentd
+    spec:
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      containers:
+      - name: fluentd
+        image: fluent/fluentd-kubernetes-daemonset:v1.12-debian-elasticsearch7-1.0
+        env:
+          - name: FLUENT_ELASTICSEARCH_HOST
+            value: "elasticsearch.logging.svc.cluster.local"
+          - name: FLUENT_ELASTICSEARCH_PORT
+            value: "9200"
+        volumeMounts:
+          - name: config-volume
+            mountPath: /fluentd/etc
+      volumes:
+        - name: config-volume
+          configMap:
+            name: fluentd-config
