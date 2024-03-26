@@ -15,15 +15,15 @@ metadata:
   lables: 
     k8s-app: elasticsearch-logging
     addonmanager.kubernetes.io/mode: Reconcile
-rules:
 - apiGroups:
-  #- ""
+    - ""
   resources:
-  - "services"
-  - "namespace"
-  - "endpoints"
+    - "services"
+    - "namespaces"
+    - "endpoints"
   verbs:
-  - "get"
+    - "get"
+
 
   ---
 kind: ClusterRoleBinding
