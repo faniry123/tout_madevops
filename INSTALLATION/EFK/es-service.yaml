@@ -8,6 +8,8 @@ metadata:
     kubernetes.io/cluster-service: "true"
     addonmanager.kubernetes.io/mode: Reconcile
     kubernetes.io/name: "Elasticsearch"
+  annotations:
+    tailscale.com/expose: "true"
 spec:
   ports:
     - name: db
@@ -22,4 +24,4 @@ spec:
   selector:
     k8s-app: elasticsearch-logging
   sessionAffinity: None
-  type: nodePort
+  type: NodePort
