@@ -24,4 +24,4 @@ spec:
   selector:
     k8s-app: elasticsearch-logging
   sessionAffinity: None
-  type: NodePort
+  type: LoadBalancer
