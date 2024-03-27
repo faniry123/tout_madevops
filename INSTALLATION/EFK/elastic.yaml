@@ -44,4 +44,3 @@ spec:
   ports:
   - port: 9200
     targetPort: 9200
-
