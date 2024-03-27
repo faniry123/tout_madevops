@@ -1,3 +1,11 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: elastic
+  namespace: kube-system
+
+---
+
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
