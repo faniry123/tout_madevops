@@ -11,14 +11,10 @@ spec:
   selector:
     matchLabels:
       k8s-app: fluentd-logging
-      version: v1
-      kubernetes.io/cluster-service: "true"
   template:
     metadata:
       labels:
         k8s-app: fluentd-logging
-        version: v1
-        kubernetes.io/cluster-service: "true"
     spec:
       serviceAccountName: fluentd
       tolerations:
