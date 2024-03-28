@@ -5,17 +5,21 @@ metadata:
   namespace: kube-system
   labels:
     k8s-app: fluentd-logging
-    version: v2
+    version: v1
     kubernetes.io/cluster-service: "true"
 spec:
+  selector:
+    matchLabels:
+      k8s-app: fluentd-logging
+      version: v1
+      kubernetes.io/cluster-service: "true"
   template:
     metadata:
       labels:
         k8s-app: fluentd-logging
-        version: v2
+        version: v1
         kubernetes.io/cluster-service: "true"
     spec:
-      serviceAccount: fluentd
       serviceAccountName: fluentd
       tolerations:
       - key: node-role.kubernetes.io/master
@@ -24,9 +28,9 @@ spec:
       - name: fluentd
         image: fluent/fluentd-kubernetes-daemonset:v1.3-debian-elasticsearch
         env:
-          - name:  FLUENT_ELASTICSEARCH_HOST
+          - name: FLUENT_ELASTICSEARCH_HOST
             value: "elasticsearch.logging"
-          - name:  FLUENT_ELASTICSEARCH_PORT
+          - name: FLUENT_ELASTICSEARCH_PORT
             value: "9200"
           - name: FLUENT_ELASTICSEARCH_SCHEME
             value: "http"
@@ -51,5 +55,4 @@ spec:
           path: /var/log
       - name: varlibdockercontainers
         hostPath:
-          path: /var/lib/docker/containers
           path: /var/lib/docker/containers
